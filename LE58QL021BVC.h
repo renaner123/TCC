@@ -18,7 +18,9 @@ public:
     // construtores    
     Codec();
   
-    void Periodico();
+    void periodico();
+  
+    void init();
   
     void tirarGancho(alt_u8 comando, int canal);
   
