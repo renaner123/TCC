@@ -49,20 +49,24 @@ void Codec::colocarGancho() {
 
 }
 
-    void respostaPeriodico();
-  
-    void respostaTirarGancho(alt_u8 comando);
-  
-    void respostaColocarGancho(alt_u8 comando);
-  
-    void respostaVerificarStatus(alt_u8 comando);
-  
-    void respostaTocarRing(alt_u8 comando);
-  
-    void respostaVerificarAtendimento(alt_u8 comando);
-  
-    void respostaTomDiscagem(alt_u8 comando);
-  
-    void respostaAtendimento(alt_u8 comando);
-  
-    void respostaColocarGancho(alt_u8 comando); 
+Slave ::Slave () {
+
+}
+
+ void Slave::respostaPeriodico(alt_u8 comando);
+
+ void Slave::respostaTirarGancho(alt_u8 comando);
+
+ void Slave::respostaColocarGancho(alt_u8 comando);
+
+ void Slave::respostaVerificarStatus(alt_u8 comando);
+
+ void Slave::respostaTocarRing(alt_u8 comando);
+
+ void Slave::respostaVerificarAtendimento(alt_u8 comando);
+
+ void Slave::respostaTomDiscagem(alt_u8 comando);
+
+ void Slave::respostaAtendimento(alt_u8 comando);
+
+ void Slave::respostaColocarGancho(alt_u8 comando); 
