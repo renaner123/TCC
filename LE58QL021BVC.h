@@ -20,21 +20,21 @@ public:
   
     void Periodico();
   
-    void TirarGancho(int canal);
+    void TirarGancho(alt_u8 comando, int canal);
   
-    void ColocarGancho(int canal);
+    void ColocarGancho(alt_u8 comando, int canal);
   
-    void VerificarStatus(int canal);
+    void VerificarStatus(alt_u8 comando, int canal);
   
-    void TocarRing(int canal);
+    void TocarRing(alt_u8 comando, int canal);
   
-    void VerificarAtendimento(int canal);
+    void VerificarAtendimento(alt_u8 comando, int canal);
   
-    void TomDiscagem(int canal);
+    void TomDiscagem(alt_u8 comando, int canal);
   
-    void Atendimento(int canal);
+    void Atendimento(alt_u8 comando, int canal);
   
-    void ColocarGancho(int canal);  
+    void ColocarGancho(alt_u8 comando, int canal);  
         
 private:
     // atributos da classe: cada objeto desta classe
@@ -47,27 +47,29 @@ private:
 class Slave {
     private:
         Codec *codec; 
+        alt_u8 tx_buf[4] = {0};
+        alt_u8 rx_buf[4] = {0};
 
     public:
         Slave();
   
     void RespostaPeriodico();
   
-    void RespostaTirarGancho(int canal);
+    void RespostaTirarGancho(alt_u8 comando);
   
-    void RespostaColocarGancho(int canal);
+    void RespostaColocarGancho(alt_u8 comando);
   
-    void RespostaVerificarStatus(int canal);
+    void RespostaVerificarStatus(alt_u8 comando);
   
-    void RespostaTocarRing(int canal);
+    void RespostaTocarRing(alt_u8 comando);
   
-    void RespostaVerificarAtendimento(int canal);
+    void RespostaVerificarAtendimento(alt_u8 comando);
   
-    void RespostaTomDiscagem(int canal);
+    void RespostaTomDiscagem(alt_u8 comando);
   
-    void RespostaAtendimento(int canal);
+    void RespostaAtendimento(alt_u8 comando);
   
-    void RespostaColocarGancho(int canal);                 
+    void RespostaColocarGancho(alt_u8 comando);                 
 
 };
 
