@@ -5,47 +5,51 @@ Codec ::Codec () {
 
 }
 
+void Codec::init(){ 
+   
+}
 
-void Codec::Periodico(){ 
+void Codec::periodico(alt_u8 comando, int canal){ 
    
 }
 
 
-void Codec::tirarGancho() {
+void Codec::tirarGancho(alt_u8 comando, int canal) {
  
 }
 
 
-void Codec::colocarGancho() { 
+void Codec::colocarGancho(alt_u8 comando, int canal) { 
+   
 
 }
 
-void Codec::verificarStatus(){ 
+void Codec::verificarStatus(alt_u8 comando, int canal){ 
    
 }
 
 
-void Codec::tocarRing() {
+void Codec::tocarRing(alt_u8 comando, int canal) {
  
 }
 
 
-void Codec::verificarAtendimento() { 
+void Codec::verificarAtendimento(alt_u8 comando, int canal) { 
 
 }
 
 
-void Codec::tomDiscagem(){ 
+void Codec::tomDiscagem(alt_u8 comando, int canal){ 
    
 }
 
 
-void Codec::atendimento() {
+void Codec::atendimento(alt_u8 comando, int canal) {
  
 }
 
 
-void Codec::colocarGancho() { 
+void Codec::colocarGancho(alt_u8 comando, int canal) { 
 
 }
 
