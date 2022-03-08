@@ -20,21 +20,21 @@ public:
   
     void Periodico();
   
-    void TirarGancho(alt_u8 comando, int canal);
+    void tirarGancho(alt_u8 comando, int canal);
   
-    void ColocarGancho(alt_u8 comando, int canal);
+    void colocarGancho(alt_u8 comando, int canal);
   
-    void VerificarStatus(alt_u8 comando, int canal);
+    void verificarStatus(alt_u8 comando, int canal);
   
-    void TocarRing(alt_u8 comando, int canal);
+    void tocarRing(alt_u8 comando, int canal);
   
-    void VerificarAtendimento(alt_u8 comando, int canal);
+    void verificarAtendimento(alt_u8 comando, int canal);
   
-    void TomDiscagem(alt_u8 comando, int canal);
+    void tomDiscagem(alt_u8 comando, int canal);
   
-    void Atendimento(alt_u8 comando, int canal);
+    void atendimento(alt_u8 comando, int canal);
   
-    void ColocarGancho(alt_u8 comando, int canal);  
+    void colocarGancho(alt_u8 comando, int canal);  
         
 private:
     // atributos da classe: cada objeto desta classe
@@ -53,23 +53,23 @@ class Slave {
     public:
         Slave();
   
-    void RespostaPeriodico();
+    void respostaPeriodico();
   
-    void RespostaTirarGancho(alt_u8 comando);
+    void respostaTirarGancho(alt_u8 comando);
   
-    void RespostaColocarGancho(alt_u8 comando);
+    void respostaColocarGancho(alt_u8 comando);
   
-    void RespostaVerificarStatus(alt_u8 comando);
+    void respostaVerificarStatus(alt_u8 comando);
   
-    void RespostaTocarRing(alt_u8 comando);
+    void respostaTocarRing(alt_u8 comando);
   
-    void RespostaVerificarAtendimento(alt_u8 comando);
+    void respostaVerificarAtendimento(alt_u8 comando);
   
-    void RespostaTomDiscagem(alt_u8 comando);
+    void respostaTomDiscagem(alt_u8 comando);
   
-    void RespostaAtendimento(alt_u8 comando);
+    void respostaAtendimento(alt_u8 comando);
   
-    void RespostaColocarGancho(alt_u8 comando);                 
+    void respostaColocarGancho(alt_u8 comando);                 
 
 };
 
