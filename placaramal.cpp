@@ -26,7 +26,7 @@ void Placaramal::init(){
 }
 
 void Placaramal::periodico(){ 
-    this->tx_buf[0] = 0x55;
+    this->tx_buf[0] = PERIODICO;
 
     IOWR_ALTERA_AVALON_PIO_DATA(TX_EN_BASE, 1);
     alt_avalon_spi_command(SPI_MASTER_BASE, 0, TAMANHOBUFFER, this->tx_buf, 0, this->rx_buf, 0);
@@ -73,7 +73,7 @@ void Placaramal::colocarGancho() {
 
 void Placaramal::tocarRing() {
     //Canal 1 ligando pro canal 2
-    this->tx_buf[0] = 0xA7;
+    this->tx_buf[0] = ATENDENDO;
 
     IOWR_ALTERA_AVALON_PIO_DATA(TX_EN_BASE, 1);
     alt_avalon_spi_command(SPI_MASTER_BASE, 0, TAMANHOBUFFER, this->tx_buf, 0, this->rx_buf, 0);
