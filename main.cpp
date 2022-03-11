@@ -22,6 +22,9 @@
 #include "io.h"
 #include <stdio.h>
 #include <unistd.h>// usleep
+#include <iostream>
+
+using namespace std;
 
 int main(void) {
 	printf("Entered Main\n");
@@ -30,28 +33,37 @@ int main(void) {
 
 	alt_u8 tx_buf[4] = {0};
 	alt_u8 rx_buf[4] = {0};
-    alt_u32 base ={};
+  
 	tx_buf[0] = 0x10;
 	tx_buf[1] = 0x20;
 	tx_buf[2] = 0x40;
 	tx_buf[3] = 0x80;
 
-	while (1) {
+    printf("%02x\n",tx_buf[0]);
+    if (tx_buf[0] == 0x10)
+    {
+       printf("opa");
+    }else{
+       printf("Lasco");
+    }
 
-		printf("Escrevendo no CODEC 4 bytes: \n");
-		IOWR_ALTERA_AVALON_PIO_DATA(base, 1);
-		alt_avalon_spi_command(base, 0, 4, &tx_buf[0], 0, &rx_buf[0], 0);
+	// while (1) {
+    
 
-		// Coloca um valor no buffer de saida do slave para ser enviado ao master.
-		IOWR_ALTERA_AVALON_SPI_TXDATA(base, 0xAA);
+	// 	printf("Escrevendo no CODEC 4 bytes: \n");
+	// 	IOWR_ALTERA_AVALON_PIO_DATA(TX_EN_BASE, 1);
+	// 	alt_avalon_spi_command(SPI_MASTER_BASE, 0, 4, &tx_buf[0], 0, &rx_buf[0], 0);
 
-		printf("Lendo do CODEC 4 bytes: \n");
-		IOWR_ALTERA_AVALON_PIO_DATA(TX_EN_BASE, 0);
-		alt_avalon_spi_command(base, 0, 0, &tx_buf[0], 4, &rx_buf[0], 0);
+	// 	// Coloca um valor no buffer de saida do slave para ser enviado ao master.
+	// 	IOWR_ALTERA_AVALON_SPI_TXDATA(SPI_SLAVE_BASE, 0xAA);
 
-		usleep(1000000);
+	// 	printf("Lendo do CODEC 4 bytes: \n");
+	// 	IOWR_ALTERA_AVALON_PIO_DATA(TX_EN_BASE, 0);
+	// 	alt_avalon_spi_command(SPI_MASTER_BASE, 0, 0, &tx_buf[0], 4, &rx_buf[0], 0);
 
-	} // end while
+	// 	usleep(1000000);
+
+	// } // end while
 
 	return 0;
 
