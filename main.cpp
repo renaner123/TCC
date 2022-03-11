@@ -1,19 +1,3 @@
-/*
- * Teste plataforma para acesso do CODEC da placa de ramal.
- * A plataforma multiplexa o MISO e MOSI em um sinal bidirecional
- * chamado DIO.
- *
- * Existe um slave SPI para apoiar no teste. Depois sera
- * substituido pelo CODEC.
- *
- * Controle TX_en:
- *    0: read slave
- *    1: write slave
- *
- * Autor: Roberto de Matos
- *  														*/
-/////////////////////////////////
-//
 #include "libs/alt_types.h"
 #include "libs/altera_avalon_spi_regs.h"
 #include "libs/altera_avalon_spi.h"
@@ -22,33 +6,36 @@
 #include "io.h"
 #include <stdio.h>
 #include <unistd.h>// usleep
+#include "placaramal.h"
 #include <iostream>
 
 using namespace std;
 
 int main(void) {
-	printf("Entered Main\n");
 
-	printf("Testing SPI: \n");
+	Placaramal teste;
 
-	alt_u8 tx_buf[4] = {0};
-	alt_u8 rx_buf[4] = {0};
-  
-	tx_buf[0] = 0x10;
-	tx_buf[1] = 0x20;
-	tx_buf[2] = 0x40;
-	tx_buf[3] = 0x80;
+	teste.init();
+	usleep(1000000);
 
-    printf("%02x\n",tx_buf[0]);
-    if (tx_buf[0] == 0x10)
-    {
-       printf("opa");
-    }else{
-       printf("Lasco");
-    }
+	teste.tirarGancho(1);
+	usleep(1000000);
+
+	teste.tomDiscagem();
+	usleep(1000000);
+
+	teste.tocarRing();
+	usleep(1000000);
+
+	teste.atendimento();
+
+
+
+    //printf("%02x\n",tx_buf[0]);
+
 
 	// while (1) {
-    
+
 
 	// 	printf("Escrevendo no CODEC 4 bytes: \n");
 	// 	IOWR_ALTERA_AVALON_PIO_DATA(TX_EN_BASE, 1);
