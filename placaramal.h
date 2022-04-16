@@ -50,6 +50,14 @@ public:
     void atendimento();
 
     void limparbuffer();
+
+    void definir_master_clock();
+
+    void definir_coefienctes();
+
+    void configurar_registradores_canais();
+
+    void ativar_pcm_highway();
   
         
 private:
@@ -60,33 +68,6 @@ private:
 };
 
 
-class Slave {
-    private:
-        Placaramal *Placaramal; 
-        alt_u8 tx_buf[4] = {0};
-        alt_u8 rx_buf[4] = {0};
-
-    public:
-        Slave();
-  
-    void respostaPeriodico();
-  
-    void respostaTirarGancho();
-  
-    void respostaColocarGancho();
-  
-    void respostaVerificarStatus();
-  
-    void respostaTocarRing();
-  
-    void respostaVerificarAtendimento();
-  
-    void respostaTomDiscagem();
-  
-    void respostaAtendimento();
-            
-
-};
 
 
 #endif	/* PLACARAMAL_H */
