@@ -56,9 +56,14 @@ public:
     void definir_coefienctes();
 
     void configurar_registradores_canais();
-
-    void ativar_pcm_highway();
+    
+    void configurar_direcao_slic();
   
+    void comando_ativar_codec();
+
+    bool is_cfail(alt_u8 analisar_byte);
+
+
         
 private:
     // atributos da classe: cada objeto desta classe
