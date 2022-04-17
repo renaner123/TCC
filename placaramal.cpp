@@ -13,6 +13,7 @@ int alt_avalon_spi_command(alt_u32 base, alt_u32 slave,
 void Placaramal::init(){ 
     
     this->definir_master_clock();
+    
 
     this->is_cfail(this->tx_buf[0]);
 
@@ -28,7 +29,7 @@ void Placaramal::init(){
         //46/47h
         //D7 1 ou 0                              D0  
         //INTM CHP SMODE CMODE CSEL3 CSEL2 CSEL1 CSEL0 
-        //46h -> 0  0  1  0  1  0  1  0  (AAh)  P/ 8.192 MHz,  TTL-compatible, Signaling on PCM highway
+        //46h -> 0  0  1  1  1  0  1  0  (3ah)  P/ 8.192 MHz,  TTL-compatible, Signaling on PCM highway, PCLK
         //CFAIL tem que ir pra 0 em 400us. Loop para verificar o bit 2(D5) da resposta 
         //55h <- 0  0  0* 0  0  0  0  1  (01h)  |00h ou 01h deve receber isso.
     }
@@ -57,7 +58,7 @@ void Placaramal::init(){
         //CD1 é entrada para sensor de gancho
         //CD2 é saída para gerar ring
         //RSVD CSTAT CFAIL IOD5(C5) IOD4(C4) IOD3(C3) IOD2(CD2) IOD1(CD1) 
-        //0  0  0  0  0  0  1  0   (42h)        P/Deixar        
+        //54 -> 0  0  0  0  0  0  1  0   (02h)        P/Deixar        
         
     }  
     void Placaramal::comando_ativar_codec(){
