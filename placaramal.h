@@ -18,6 +18,7 @@
 #define READ_IO_REGISTER 0X53                               //         |01010011
 #define RING_CHANNEL 0X1C                                   //         |00011100
 #define STOP_RING_CHANNEL 0X1E                              //         |00011110
+#define HARDWARE_RESET 0X04
 
 //VALORES USADOS NAS CONFIGURACOES
 #define MASTER_CLOCK 0X12     //2.048 Mhz - PCLK            //         |00010010
@@ -27,7 +28,9 @@
 #define TIME_REAL_DATA 0XAA                                 //         |10101010
 #define DEFAULT_COEFFICIENT 0X00                            
 #define DIRECTION_SLIC_CD1_CD2 0X02 //CD1 INPUT - CD2 OUTPUT           |00000010
-
+#define TAMANHOBUFFER 8
+#define CHANNEL_1 0x01
+#define CHANNEL_2 0x02
 
 #include "libs/alt_types.h"
 #include "libs/altera_avalon_spi_regs.h"
@@ -54,8 +57,6 @@ public:
     void tirarGancho(int canal);
   
     void colocarGancho();
-    
-    void enviarRing();
   
     void verificarAtendimento();
   
@@ -79,7 +80,19 @@ public:
 
     void configurar_time_slot();
 
+    void configurar_time_real_data();
+
     void configurar_interrupt_mask();
+
+    void ringar_canal();
+
+    void hardware_reset();
+
+    void write_codec(alt_u8 comando_codec, alt_u8 valor_comando);
+
+    void write_codec(alt_u8 comando_codec);
+
+    alt_u8 read_codec(alt_u8 comando_codec);
 
     bool is_cfail(alt_u8 analisar_byte);
 

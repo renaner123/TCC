@@ -16,6 +16,7 @@ int main(void) {
 	Placaramal teste;
 
 	teste.init();
+	teste.ringar_canal();
 /* 	usleep(1000000);
 
 	// while (1) {
