@@ -6,20 +6,30 @@ Placaramal::Placaramal() {
 
     void Placaramal::init(){ 
         
+    	this->write_codec(HARDWARE_RESET);
+    	usleep(4000000);
         this->definir_master_clock();
+        usleep(1000000);
+        printf("Valor recebido do codec: %02x: \n",this->read_codec(READ_CHIP_CONFIGURATION_REGISTER));
         this->configurar_debounce_time();
+        usleep(1000000);
         this->configurar_time_slot();  
+        usleep(1000000);
         printf("Valor recebido do codec: %02x: \n",this->read_codec(READ_SLIC_DIRECTION_STATUS_BITS));
         this->configurar_registradores_canais();
+        usleep(1000000);
         this->configurar_interrupt_mask();
+        usleep(1000000);
         this->definir_coefienctes();
+        usleep(1000000);
         this->configurar_direcao_slic();
+        usleep(1000000);
         this->comando_ativar_codec();
         printf("Valor recebido do codec: %02x: \n",this->read_codec(READ_SLIC_DIRECTION_STATUS_BITS));
     }
 
     void Placaramal::definir_master_clock(){
-        this->write_codec(READ_CHIP_CONFIGURATION_REGISTER,MASTER_CLOCK);
+        this->write_codec(WRITE_CHIP_CONFIGURATION_REGISTER,MASTER_CLOCK);
     }
 
     void Placaramal::configurar_debounce_time(){
@@ -109,8 +119,8 @@ Placaramal::Placaramal() {
 
     void Placaramal::limparbuffer(){
         for(int i=0;i<TAMANHOBUFFER;i++){
-            this->tx_buf[i] = {};
-            this->rx_buf[i] = {};
+            this->tx_buf[i] = 0;
+            this->rx_buf[i]= 0;
         }  
 }
 

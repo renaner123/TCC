@@ -1,5 +1,11 @@
-#ifndef PLACARAMAL_H
-#define	PLACARAMAL_H
+#include "alt_types.h"
+#include "altera_avalon_spi_regs.h"
+#include "altera_avalon_spi.h"
+#include "system.h"
+#include "altera_avalon_pio_regs.h"
+#include "io.h"
+#include <stdio.h>
+#include <unistd.h>// usleep
 
 //Comandos utilizados para configurar a codec
 #define WRITE_CHIP_CONFIGURATION_REGISTER 0X46              //         |01000110
@@ -32,80 +38,69 @@
 #define CHANNEL_1 0x01
 #define CHANNEL_2 0x02
 
-#include "libs/alt_types.h"
-#include "libs/altera_avalon_spi_regs.h"
-#include "libs/altera_avalon_spi.h"
-#include "libs/system.h"
-#include "libs/altera_avalon_pio_regs.h"
-#include "io.h"
-#include <stdio.h>
-#include <unistd.h>// usleep
-
-class Placaramal {  
+class Placaramal{
 
   
-public:
-    // construtores    
-    Placaramal();
+	public:
+		// construtores
+		Placaramal();
 
-    ~Placaramal() {};
-  
-    void periodico();
-  
-    void init();
-  
-    void tirarGancho(int canal);
-  
-    void colocarGancho();
-  
-    void verificarAtendimento();
-  
-    void tomDiscagem();
-  
-    void atendimento();
+		~Placaramal() {};
 
-    void limparbuffer();
+		void periodico();
 
-    void definir_master_clock();
+		void init();
 
-    void definir_coefienctes();
+		void tirarGancho(int canal);
 
-    void configurar_registradores_canais();
-    
-    void configurar_direcao_slic();
-  
-    void comando_ativar_codec();
+		void colocarGancho();
 
-    void configurar_debounce_time();
+		void verificarAtendimento();
 
-    void configurar_time_slot();
+		void tomDiscagem();
 
-    void configurar_time_real_data();
+		void atendimento();
 
-    void configurar_interrupt_mask();
+		void limparbuffer();
 
-    void ringar_canal();
+		void definir_master_clock();
 
-    void hardware_reset();
+		void definir_coefienctes();
 
-    void write_codec(alt_u8 comando_codec, alt_u8 valor_comando);
+		void configurar_registradores_canais();
 
-    void write_codec(alt_u8 comando_codec);
+		void configurar_direcao_slic();
 
-    alt_u8 read_codec(alt_u8 comando_codec);
+		void comando_ativar_codec();
 
-    bool is_cfail(alt_u8 analisar_byte);
+		void configurar_debounce_time();
+
+		void configurar_time_slot();
+
+		void configurar_time_real_data();
+
+		void configurar_interrupt_mask();
+
+		void ringar_canal();
+
+		void hardware_reset();
+
+		void write_codec(alt_u8 comando_codec, alt_u8 valor_comando);
+
+		void write_codec(alt_u8 comando_codec);
+
+		alt_u8 read_codec(alt_u8 comando_codec);
+
+		bool is_cfail(alt_u8 analisar_byte);
 
 
         
-private:
-    // atributos da classe: cada objeto desta classe
-    alt_u8 tx_buf[8] = {0};
-  	alt_u8 rx_buf[8] = {0};
+	private:
+		// atributos da classe: cada objeto desta classe
+		alt_u8 tx_buf[8];
+		alt_u8 rx_buf[8];
   
 };
 
 
 
-
-#endif	/* PLACARAMAL_H */

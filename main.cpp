@@ -1,33 +1,23 @@
-#include "libs/alt_types.h"
-#include "libs/altera_avalon_spi_regs.h"
-#include "libs/altera_avalon_spi.h"
-#include "libs/system.h"
-#include "libs/altera_avalon_pio_regs.h"
+#include "placaramal.h"
+#include "alt_types.h"
+#include "altera_avalon_spi_regs.h"
+#include "altera_avalon_spi.h"
+#include "system.h"
+#include "altera_avalon_pio_regs.h"
 #include "io.h"
 #include <stdio.h>
 #include <unistd.h>// usleep
-#include "placaramal.h"
-#include <iostream>
 
-using namespace std;
 
-int main(void) {
-
+int main(int argc, char **argv)
+{
 	Placaramal teste;
 
 	teste.init();
-	teste.ringar_canal();
-/* 	usleep(1000000);
+	teste.ringar_canal();//5 toques e somente o canal 1
 
-	// while (1) {
-
-
-	// } // end while
-
-	return 0;
-*/
-} // end main
-
+    return 0;
+}
 
 
 	// while (1) {
