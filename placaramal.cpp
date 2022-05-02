@@ -6,87 +6,87 @@ Placaramal::Placaramal() {
 
     void Placaramal::init(){ 
         
-    	this->write_codec(HARDWARE_RESET);
+    	this->writeCodec(HARDWARE_RESET);
     	usleep(4000000);
-        this->definir_master_clock();
+        this->definirMasterClock();
         usleep(1000000);
-        printf("Valor recebido do codec: %02x: \n",this->read_codec(READ_CHIP_CONFIGURATION_REGISTER));
-        this->configurar_debounce_time();
+        printf("Valor recebido do codec: %02x: \n",this->readCodec(READ_CHIP_CONFIGURATION_REGISTER));
+        this->configurarDebounceTime();
         usleep(1000000);
-        this->configurar_time_slot();  
+        this->configurarTimeSlot();  
         usleep(1000000);
-        printf("Valor recebido do codec: %02x: \n",this->read_codec(READ_SLIC_DIRECTION_STATUS_BITS));
-        this->configurar_registradores_canais();
+        printf("Valor recebido do codec: %02x: \n",this->readCodec(READ_SLIC_DIRECTION_STATUS_BITS));
+        this->configurarRegistradoresCanais();
         usleep(1000000);
-        this->configurar_interrupt_mask();
+        this->configurarInterruptMask();
         usleep(1000000);
-        this->definir_coefienctes();
+        this->definirCoefienctes();
         usleep(1000000);
-        this->configurar_direcao_slic();
+        this->configurarDirecaoSlic();
         usleep(1000000);
-        this->comando_ativar_codec();
-        printf("Valor recebido do codec: %02x: \n",this->read_codec(READ_SLIC_DIRECTION_STATUS_BITS));
+        this->comandoAtivarCodec();
+        printf("Valor recebido do codec: %02x: \n",this->readCodec(READ_SLIC_DIRECTION_STATUS_BITS));
     }
 
-    void Placaramal::definir_master_clock(){
-        this->write_codec(WRITE_CHIP_CONFIGURATION_REGISTER,MASTER_CLOCK);
+    void Placaramal::definirMasterClock(){
+        this->writeCodec(WRITE_CHIP_CONFIGURATION_REGISTER,MASTER_CLOCK);
     }
 
-    void Placaramal::configurar_debounce_time(){
-        this->write_codec(WRITE_CHANNEL_ENABLE,DEBOUNCE_TIME);
+    void Placaramal::configurarDebounceTime(){
+        this->writeCodec(WRITE_CHANNEL_ENABLE,DEBOUNCE_TIME);
     }
 
-    void Placaramal::configurar_time_slot(){
-        this->write_codec(WRITE_SET_TIMESLOT,TIME_SLOT);
+    void Placaramal::configurarTimeSlot(){
+        this->writeCodec(WRITE_SET_TIMESLOT,TIME_SLOT);
     }
 
-    void Placaramal::configurar_time_real_data(){
-        this->write_codec(WRITE_REAL_TIME_DATA_REGISTER,TIME_REAL_DATA);
+    void Placaramal::configurarTimeRealData(){
+        this->writeCodec(WRITE_REAL_TIME_DATA_REGISTER,TIME_REAL_DATA);
     }
 
-    void Placaramal::definir_coefienctes(){
-        this->write_codec(WRITE_OPERATING_FUNCTIONS,DEFAULT_COEFFICIENT);
+    void Placaramal::definirCoefienctes(){
+        this->writeCodec(WRITE_OPERATING_FUNCTIONS,DEFAULT_COEFFICIENT);
     }
 
-    void Placaramal::configurar_registradores_canais(){
+    void Placaramal::configurarRegistradoresCanais(){
         //estático por enquanto
         alt_u8 channel1e2 = 0x03;
-        this->write_codec(WRITE_CHANNEL_ENABLE,channel1e2);
+        this->writeCodec(WRITE_CHANNEL_ENABLE,channel1e2);
     }
 
-    void Placaramal::configurar_direcao_slic(){
-        this->write_codec(WRITE_SLIC_DIRECTION_STATUS_BITS,DIRECTION_SLIC_CD1_CD2);        
+    void Placaramal::configurarDirecaoSlic(){
+        this->writeCodec(WRITE_SLIC_DIRECTION_STATUS_BITS,DIRECTION_SLIC_CD1_CD2);        
     }  
 
-    void Placaramal::comando_ativar_codec(){
-        this->write_codec(ACTIVATE_CODEC);
+    void Placaramal::comandoAtivarCodec(){
+        this->writeCodec(ACTIVATE_CODEC);
     }
 
-    void Placaramal::configurar_interrupt_mask(){
-        this->write_codec(WRITE_INTERRUPT_MASK_REGISTER,INTERRUPT_MASK);
+    void Placaramal::configurarInterruptMask(){
+        this->writeCodec(WRITE_INTERRUPT_MASK_REGISTER,INTERRUPT_MASK);
     }
 
-    bool Placaramal::is_cfail(alt_u8 analisar_byte){
-       
-        //printf("%02x\n",analisar_byte);
-        return false;
-    }
-
-    void Placaramal::ringar_canal(){
-    //por enquanto está estático canal 1 
+    void Placaramal::ringarCanal(){
+    //por enquanto está estático no canal 1 
     int count = 0;   
-        while (count<5) {
-            this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_1);            
-            this->write_codec(WRITE_IO_REGISTER,RING_CHANNEL);
-            usleep(1000000);
-            this->write_codec(WRITE_IO_REGISTER,STOP_RING_CHANNEL);
-            usleep(4000000);
-            count ++;
-        }      
+        while (this->Placaramal::Atendimento==false) {
+            if(this->channelIsOutHook(CHANNEL_1)){
+                this->Placaramal::setAtendimento(true);
+                break;
+            }else{
+                this->writeCodec(WRITE_CHANNEL_ENABLE,CHANNEL_1);            
+                this->writeCodec(WRITE_IO_REGISTER,RING_CHANNEL);
+                usleep(1000000);
+                this->writeCodec(WRITE_IO_REGISTER,STOP_RING_CHANNEL);
+                usleep(4000000);
+                count ++;
+            }
+        }    
+        this->Placaramal::setAtendimento(false);  
     }
 
-    alt_u8 Placaramal::read_codec(alt_u8 comando_codec){
-        this->limparbuffer();
+    alt_u8 Placaramal::readCodec(alt_u8 comando_codec){
+        this->limparBuffer();
         this->tx_buf[0]=comando_codec;
 
         IOWR_ALTERA_AVALON_PIO_DATA(TX_EN_BASE, 1);
@@ -97,9 +97,9 @@ Placaramal::Placaramal() {
         return this->rx_buf[0];
     }
 
-    void Placaramal::write_codec(alt_u8 comando_codec, alt_u8 valor_comando){
+    void Placaramal::writeCodec(alt_u8 comando_codec, alt_u8 valor_comando){
         
-        this->limparbuffer();
+        this->limparBuffer();
         this->tx_buf[0]=comando_codec;
         this->tx_buf[1]=valor_comando;
 
@@ -108,8 +108,8 @@ Placaramal::Placaramal() {
         alt_avalon_spi_command(SPI_MASTER_BASE, 0, 1, &this->tx_buf[1], 0, &this->rx_buf[1], 0);
     }
 
-    void Placaramal::write_codec(alt_u8 comando_codec){        
-        this->limparbuffer();
+    void Placaramal::writeCodec(alt_u8 comando_codec){        
+        this->limparBuffer();
         this->tx_buf[0]=comando_codec;
 
         IOWR_ALTERA_AVALON_PIO_DATA(TX_EN_BASE, 1);
@@ -117,11 +117,27 @@ Placaramal::Placaramal() {
     }    
 
 
-    void Placaramal::limparbuffer(){
+    bool Placaramal::channelIsOutHook(alt_u8 channel){
+        this->writeCodec(WRITE_CHANNEL_ENABLE,channel);
+        alt_u8 status_channel = this->readCodec(READ_IO_REGISTER);
+
+        if(channel==CHANNEL_1 && status_channel==CHANNEL_1__OUT_HOOK){
+            return true;
+        }else if(channel==CHANNEL_2 && status_channel==CHANNEL_1__OUT_HOOK){
+            return true;
+        }else{
+            return false;
+        }      
+    }
+
+
+    void Placaramal::limparBuffer(){
         for(int i=0;i<TAMANHOBUFFER;i++){
             this->tx_buf[i] = 0;
             this->rx_buf[i]= 0;
         }  
+
+
 }
 
 

@@ -37,66 +37,72 @@
 #define TAMANHOBUFFER 8
 #define CHANNEL_1 0x01
 #define CHANNEL_2 0x02
+#define CHANNEL_1__OUT_HOOK 0xab
+#define CHANNEL_2__OUT_HOOK 0xae
+#define CHANNEL_1_2__OUT_HOOK 0xaf
 
 class Placaramal{
 
   
 	public:
 		// construtores
+      
 		Placaramal();
 
 		~Placaramal() {};
 
-		void periodico();
+		void periodico(alt_u8 comando_codec);
 
 		void init();
 
-		void tirarGancho(int canal);
+		void verificarAtendimento(alt_u8 canal);
 
-		void colocarGancho();
+		void limparBuffer();
 
-		void verificarAtendimento();
+		void definirMasterClock();
 
-		void tomDiscagem();
+		void definirCoefienctes();
 
-		void atendimento();
+		void configurarRegistradoresCanais();
 
-		void limparbuffer();
+		void configurarDirecaoSlic();
 
-		void definir_master_clock();
+		void comandoAtivarCodec();
 
-		void definir_coefienctes();
+		void configurarDebounceTime();
 
-		void configurar_registradores_canais();
+		void configurarTimeSlot();
 
-		void configurar_direcao_slic();
+		void configurarTimeRealData();
+    
+		void configurarInterruptMask();
 
-		void comando_ativar_codec();
+        //faz um canal ringar, receber a tensão de ring fornecida pela placa fonte
+		void ringarCanal();
 
-		void configurar_debounce_time();
+        //Envia o comando para fazer hardware reset da codec
+		void hardwareReset();
 
-		void configurar_time_slot();
+        //envia um comando de escrita e o valor a ser escrito para o codec
+		void writeCodec(alt_u8 comando_codec, alt_u8 valor_comando);
 
-		void configurar_time_real_data();
+        //envia algum comando de ativação ao codec, que não precisa de um valor
+		void writeCodec(alt_u8 comando_codec);
 
-		void configurar_interrupt_mask();
+        //retorna uma resposta do codec
+		alt_u8 readCodec(alt_u8 comando_codec);
 
-		void ringar_canal();
+        //retorna true se o canal estiver fora do gancho
+        bool channelIsOutHook(alt_u8 channel);
 
-		void hardware_reset();
-
-		void write_codec(alt_u8 comando_codec, alt_u8 valor_comando);
-
-		void write_codec(alt_u8 comando_codec);
-
-		alt_u8 read_codec(alt_u8 comando_codec);
-
-		bool is_cfail(alt_u8 analisar_byte);
-
+        //retorna true se o canal atendeu a chamada(ring)
+        bool getAtendimento(void);
+	    bool setAtendimento(bool atendimento);
 
         
 	private:
 		// atributos da classe: cada objeto desta classe
+        bool Atendimento;
 		alt_u8 tx_buf[8];
 		alt_u8 rx_buf[8];
   
