@@ -93,9 +93,12 @@ ENTITY tdm_cont_ent IS
 	 -- Debug
 	 DSTi_reg_aux : OUT STD_LOGIC;
 	 Rx_Reg_aux   : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-	 RxFlag_aux   : OUT STD_LOGIC
+	 RxFlag_aux   : OUT STD_LOGIC;
+	 
+	 TxFlag_aux   : OUT STD_LOGIC;
+	 Tx_Reg_aux   : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+   Tx_reg_i_aux : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
     );
-
 
 END tdm_cont_ent;
 
@@ -131,7 +134,7 @@ BEGIN  -- tdm_cont_rtl
 -------------------------------------------------------------------------------
 -- Global constants
 -------------------------------------------------------------------------------
-  Tot_count  <= NoChannels & "010";
+  Tot_count  <= NoChannels & "000";
   drop_count <= DropChannels & "000";
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
@@ -284,9 +287,7 @@ BEGIN  -- tdm_cont_rtl
 
       IF Rx_En = '1' THEN
 
---		  IF Rx_count < "111" THEN
 		    Rx_Reg <= (Rx_Reg(6 DOWNTO 0) & DSTi_reg) ;
---		  end if;
 			 
         IF Rx_count = "111" THEN
           Rx_count := "000";
@@ -486,6 +487,10 @@ BEGIN  -- tdm_cont_rtl
 	DSTi_reg_aux <= DSTi_reg;
 	Rx_Reg_aux   <= Rx_Reg;
 	RxFlag_aux   <= RxFlag; 
+
+	TxFlag_aux <= TxFlag;
+	Tx_Reg_aux <=	Tx_reg;
+	Tx_reg_i_aux <= Tx_reg_i;
   
   END tdm_cont_rtl;
 

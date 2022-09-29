@@ -9,25 +9,26 @@ LIBRARY work;
 ENTITY pji3_spi IS 
 	PORT
 	(
-		CLOCK_50  				: IN  STD_LOGIC;		
-		CLOCK_2M					: IN STD_LOGIC;
-		KEY0	    				: IN STD_LOGIC;		--reset
-		DIO       				: INOUT STD_LOGIC; 	--IOC
-		DCLK		 				: OUT STD_LOGIC;   	--CLK	
-		FS        				: OUT STD_LOGIC;  	--F0_SYS
-		C2_SYS    				: OUT STD_LOGIC;  	-- C2_SYS/PCLK		
-		CS  		 				: OUT STD_LOGIC;   	--CSRAMAL
-		Q_FIFO_OUT				: OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-		INT 		 				: IN STD_LOGIC;   	--INTCDC	
-		TDMI0		 				: IN STD_LOGIC ;		--DXA
-		TDMO0	    				: OUT STD_LOGIC;		--DRA
+		CLOCK_50  				: IN  std_logic;		
+		CLOCK_2M					: IN std_logic;		
+		KEY0	    				: IN std_logic;		--reset
+		DIO       				: INOUT std_logic; 	--IOC
+		DCLK		 				: OUT std_logic;   	--CLK	
+		FS        				: OUT std_logic;  	--F0_SYS
+		C2_SYS    				: OUT std_logic;  	-- C2_SYS/PCLK		
+		CS  		 				: OUT std_logic;   	--CSRAMAL
+		INT 		 				: IN std_logic;   	--INTCDC	
+		TDMI0		 				: IN std_logic ;		--DXA
+		TDMO0	    				: OUT std_logic;		--DRA
 		--DXA						: out std_logic
-		 DSTi_reg_aux : OUT STD_LOGIC;
-		 Rx_Reg_aux   : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		 RxFlag_aux   : OUT STD_LOGIC 	 
+		DSTi_reg_aux 			: OUT std_logic;
+		Rx_Reg_aux   			: OUT std_logic_vector(7 DOWNTO 0);
+		RxFlag_aux   			: OUT std_logic;
+		TxFlag_aux   			: OUT STD_LOGIC;
+		Tx_Reg_aux   			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+		Tx_reg_i_aux 			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0)			
 	);
 	
-		
 END pji3_spi;
 
 ARCHITECTURE system OF pji3_spi IS 
@@ -77,64 +78,101 @@ ARCHITECTURE system OF pji3_spi IS
     );
 	end component;	
 	
-	component fifox IS
+	component fiforx IS
 		PORT
 		(
-			data		: IN STD_LOGIC_VECTOR (7 DOWNTO 0);
-			rdclk		: IN STD_LOGIC ;
-			rdreq		: IN STD_LOGIC ;
-			wrclk		: IN STD_LOGIC ;
-			wrreq		: IN STD_LOGIC ;
-			q		: OUT STD_LOGIC_VECTOR (7 DOWNTO 0);
-			rdempty		: OUT STD_LOGIC ;
-			wrfull		: OUT STD_LOGIC 
+			data			: IN std_logic_vector (7 DOWNTO 0);
+			rdclk			: IN std_logic ;
+			rdreq			: IN std_logic ;									-- 1 lê o bit da fifo, 0 não lê
+			wrclk			: IN std_logic ;	
+			wrreq			: IN std_logic ;									-- 1 escreve na fifo, 0 não escreve
+			q				: OUT std_logic_vector (7 DOWNTO 0);		
+			rdempty		: OUT std_logic ;									-- 0 tem dados na fifo
+			wrfull		: OUT std_logic 									-- 1 fifo está cheia
 		);
-	END component fifox;	
+	END component fiforx;	
+	
+	component fifotx IS
+		PORT
+		(
+			data			: IN std_logic_vector (7 DOWNTO 0);
+			rdclk			: IN std_logic ;
+			rdreq			: IN std_logic ;									-- 1 lê o bit da fifo, 0 não lê
+			wrclk			: IN std_logic ;	
+			wrreq			: IN std_logic ;									-- 1 escreve na fifo, 0 não escreve
+			q				: OUT std_logic_vector (7 DOWNTO 0);		
+			rdempty		: OUT std_logic ;									-- 0 tem dados na fifo
+			wrfull		: OUT std_logic 									-- 1 fifo está cheia
+		);
+	END component fifotx;	
+		
+	component fifo_controller IS
+		 PORT (
+			  pclk		  			: IN  std_logic;	
+			  FS, reset          : IN std_logic;   
+			  --fifo rx 
+			  rdreq_fiforx			: OUT std_logic;									-- 1 lê o bit da fifo, 0 não lê
+			  wrreq_fiforx			: OUT std_logic;									-- 1 escreve na fifo, 0 não escreve
+			  rdempty_fixorx		: IN std_logic;									-- 0 tem dados na fifo
+			  wrfull_fiforx		: IN std_logic; 									-- 1 fifo está cheia
+			  --fifo tx
+			  rdreq_fifotx			: OUT std_logic;									-- 1 lê o bit da fifo, 0 não lê
+			  wrreq_fifotx			: OUT std_logic;									-- 1 escreve na fifo, 0 não escreve
+			  rdempty_fixotx		: IN std_logic;									-- 0 tem dados na fifo
+			  wrfull_fifotx		: IN std_logic 									-- 1 fifo está cheia
+		 );
+	END component fifo_controller;	
+	
+	
+	
 	
 	component tdm_cont_ent IS
 		PORT (
-		 rst_n  : IN  STD_LOGIC;             					-- System asynchronous reset
-		 C2     : IN  STD_LOGIC;             					-- ST-Bus clock
-		 DSTi   : IN  STD_LOGIC;             					-- ST-Bus input Data
-		 DSTo   : OUT STD_LOGIC;             					-- ST-Bus output Data
-		 F0_n   : IN  STD_LOGIC;             					-- St-Bus Framing pulse
-		 F0od_n : OUT STD_LOGIC;             					-- ST-Bus Delayed Framing pulse
+		 rst_n  : IN  std_logic;             					-- System asynchronous reset
+		 C2     : IN  std_logic;             					-- ST-Bus clock
+		 DSTi   : IN  std_logic;             					-- ST-Bus input Data
+		 DSTo   : OUT std_logic;             					-- ST-Bus output Data
+		 F0_n   : IN  std_logic;             					-- St-Bus Framing pulse
+		 F0od_n : OUT std_logic;             					-- ST-Bus Delayed Framing pulse
 
-		 CLK_I : IN STD_LOGIC;               					-- System clock
+		 CLK_I : IN std_logic;               					-- System clock
 
 	--Backend interface
-		 NoChannels   : IN STD_LOGIC_VECTOR(4 DOWNTO 0);  	-- no of Time slots
-		 DropChannels : IN STD_LOGIC_VECTOR(4 DOWNTO 0);  	-- No of channels to be dropped
+		 NoChannels   	: IN std_logic_vector(4 DOWNTO 0);  	-- no of Time slots
+		 DropChannels 	: IN std_logic_vector(4 DOWNTO 0);  	-- No of channels to be dropped
 
-		 RxD         : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);  	-- Parellel Rx output
-		 RxValidData : OUT STD_LOGIC;                     	-- Valid Data
-		 FramErr     : OUT STD_LOGIC;                     	-- Frame Error due to
+		 RxD         	: OUT std_logic_vector(7 DOWNTO 0);  	-- Parellel Rx output
+		 RxValidData 	: OUT std_logic;                     	-- Valid Data
+		 FramErr     	: OUT std_logic;                     	-- Frame Error due to
 																			-- buffer overflow
-		 RxRead      : IN  STD_LOGIC;                     	-- Read Byte
-		 RxRdy       : OUT STD_LOGIC;                     	-- Byte ready
-		 TxErr       : OUT STD_LOGIC;
+		 RxRead      	: IN  std_logic;                     	-- Read Byte
+		 RxRdy       	: OUT std_logic;                     	-- Byte ready
+		 TxErr       	: OUT std_logic;
 																			-- Tx Error in transmission due to buffer underflow
-		 TxD         : IN  STD_LOGIC_VECTOR(7 DOWNTO 0);  	-- Parellal Tx Input
-		 TxValidData : IN  STD_LOGIC;                     	-- Tx Valid Data
-		 TxWrite     : IN  STD_LOGIC;                     	-- Write byte
-		 TxRdy       : OUT STD_LOGIC;                     	-- Byte Ready
+		 TxD         	: IN  std_logic_vector(7 DOWNTO 0);  	-- Parellal Tx Input
+		 TxValidData 	: IN  std_logic;                     	-- Tx Valid Data
+		 TxWrite     	: IN  std_logic;                     	-- Write byte
+		 TxRdy       	: OUT std_logic;                     	-- Byte Ready
 
 		 -- Serial Interfaces
-		 EnableSerialIF : IN STD_LOGIC;      					-- Enable Serial Interface
+		 EnableSerialIF: IN std_logic;      					-- Enable Serial Interface
 
-		 Tx_en0 : OUT STD_LOGIC;             					-- Tx enable channel 0
-		 Tx_en1 : OUT STD_LOGIC;             					-- Tx enable channel 1
-		 Tx_en2 : OUT STD_LOGIC;             					-- Tx enable channel 2
+		 Tx_en0 			: OUT std_logic;             					-- Tx enable channel 0
+		 Tx_en1 			: OUT std_logic;             					-- Tx enable channel 1
+		 Tx_en2 			: OUT std_logic;             					-- Tx enable channel 2
 
-		 Rx_en0 : OUT STD_LOGIC;             					-- Rx enable channel 0
-		 Rx_en1 : OUT STD_LOGIC;             					-- Rx enable channel 1
-		 Rx_en2 : OUT STD_LOGIC;             					-- Rx enable channel 2
-		 SerDo : OUT STD_LOGIC;              					-- serial Data out
-		 SerDi : IN  STD_LOGIC;               					-- Serial Data in
+		 Rx_en0 			: OUT std_logic;             					-- Rx enable channel 0
+		 Rx_en1 			: OUT std_logic;             					-- Rx enable channel 1
+		 Rx_en2 			: OUT std_logic;             					-- Rx enable channel 2
+		 SerDo 			: OUT std_logic;              					-- serial Data out
+		 SerDi 			: IN  std_logic;               					-- Serial Data in
 		 -- Debug
-		DSTi_reg_aux : OUT STD_LOGIC;
-		Rx_Reg_aux   : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-	   RxFlag_aux   : OUT STD_LOGIC 		
+		DSTi_reg_aux 	: OUT std_logic;
+		Rx_Reg_aux   	: OUT std_logic_vector(7 DOWNTO 0);
+	   RxFlag_aux   	: OUT std_logic; 	
+		TxFlag_aux   	: OUT STD_LOGIC;
+		Tx_Reg_aux   	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+		Tx_reg_i_aux 	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
 		 ); 
 	 end component tdm_cont_ent;
 
@@ -150,7 +188,7 @@ ARCHITECTURE system OF pji3_spi IS
 	SIGNAL SerDi_wire  : std_logic;     
 	SIGNAL DSTo_wire : std_logic;
 	SIGNAL DSTi_wire : std_logic;     
-
+	-- sinais tdm cont
 	SIGNAL F0od_n_wire: std_logic;
 	signal write_data_fifo_in_rx : std_logic_vector(31 downto 0);
 	signal write_data_fifo_out_tx : std_logic_vector(31 downto 0);
@@ -164,14 +202,27 @@ ARCHITECTURE system OF pji3_spi IS
 	SIGNAL TxRdy_view_wire : std_logic;
 	SIGNAL TDMI0_wire : std_logic;
 	SIGNAL TDMO0_wire : std_logic;
+	SIGNAL rxd_wire : std_logic_vector(7 downto 0);  	
+	SIGNAL txd_wire : std_logic_vector(7 downto 0);	
 	-- Sinais pra gerar o DXA
 	SIGNAL frame_start, frame_end : std_logic;
 	SIGNAL frame_num : std_logic_vector(4 downto 0);
 	SIGNAL frame_num_aux : std_logic_vector(7 downto 0);  
-	SIGNAL rxd_wire : std_logic_vector(7 downto 0);  	
-	SIGNAL txd_wire : std_logic_vector(7 downto 0);
-	SIGNAL rdempty_wire : std_logic;	
-	SIGNAL wrfull_wire  : std_logic;	
+	-- sinais fixo rx	
+	SIGNAL fifoRx_rdempty_wire : std_logic;	
+	SIGNAL fifoRx_wrfull_wire  : std_logic;	
+	SIGNAL fifoRx_rdreq_control: std_logic;
+	SIGNAL fifoRx_wrreq_control : std_logic;
+	SIGNAL fifoRx_out_wire		 : std_logic_vector (7 DOWNTO 0);
+	-- sinais fixo tx	
+	SIGNAL fifoTx_rdempty_wire : std_logic;	
+	SIGNAL fifoTx_wrfull_wire  : std_logic;	
+	SIGNAL fifoTx_rdreq_control: std_logic;
+	SIGNAL fifoTx_wrreq_control : std_logic;
+	
+	SIGNAL TxValidData : std_logic;
+	SIGNAL RxValidData : std_logic;
+	
 BEGIN 
 	 
 	
@@ -193,17 +244,45 @@ BEGIN
 			tx_en_export             => TX_en              				--               tx_en.export
 	  );
 		
-	fifo_catalog : component fifox port map (
+	fifo_catalog_rx : component fiforx port map (
 			data		=>	rxd_wire,
 			rdclk		=> CLOCK_50,
-			rdreq		=> '1',
+			rdreq		=> fifoRx_rdreq_control,
 			wrclk		=> CLOCK_2M,
-			wrreq		=> '1',
-			q			=> Q_FIFO_OUT,
-			rdempty	=>	rdempty_wire,
-			wrfull	=> wrfull_wire
+			wrreq		=> fifoRx_wrreq_control,
+			q			=> fifoRx_out_wire,
+			rdempty	=>	fifoRx_rdempty_wire,
+			wrfull	=> fifoRx_wrfull_wire
 		);
 	
+	fifo_catalog_tx : component fifotx port map (
+			data		=> fifoRx_out_wire,
+			rdclk		=> CLOCK_50,
+			rdreq		=> fifoTx_rdreq_control,
+			wrclk		=> CLOCK_50 ,
+			wrreq		=> fifoTx_wrreq_control,
+			q			=> txd_wire,
+			rdempty	=>	fifoTx_rdempty_wire,
+			wrfull	=> fifoTx_wrfull_wire
+		);	
+	
+	fifo_controller_top : component fifo_controller 
+		port map (
+		  pclk  		=>	CLOCK_2M,	
+		  FS					=> fs_wire,
+		  reset        	=> reset,
+		  --fifo rx 
+		  rdreq_fiforx		=>	fifoRx_rdreq_control,
+		  wrreq_fiforx		=>	fifoRx_wrreq_control,	
+		  rdempty_fixorx	=>	fifoRx_rdempty_wire,
+		  wrfull_fiforx	=>	fifoRx_wrfull_wire,	
+		  --fifo tx
+		  rdreq_fifotx		=>	fifoTx_rdreq_control,	
+		  wrreq_fifotx		=>	fifoTx_wrreq_control,	
+		  rdempty_fixotx	=>	fifoTx_rdempty_wire,
+		  wrfull_fifotx	=>	fifoTx_wrfull_wire	
+		 );
+
 	
  	frame_strobe : component frame_sync port map(
 		 pclk  => CLOCK_2M,   
@@ -251,28 +330,31 @@ BEGIN
 		TxD            => txd_wire,									-- in Parellal Tx input		
 
 				-- Controle
-		NoChannels     => "00000",									-- in - Números time slot -> 111
+		NoChannels     => "00100",									-- in - Números time slot -> 111
 		DropChannels   => "00000",									-- in - Time slot to be dropped -> 000	
 		
 		-- Backend
-	--      RxValidData    => ,									-- out valid data strobe 	-> 1
+	   RxValidData    => RxValidData ,							-- out valid data strobe 	-> 1
 	--      FramErr        =>  ,  								-- out wb 						   -> 0		
 	
 		-- Backend
 		RxRead         => frame_end,    							-- in   - read byte, fsm rx_Buffer{idle:0, read:0, write:RxRdy, waitwrite:1}		
-		RxRdy          => RxRdy_view_wire,				 				-- out  - valid data exist - fsm tdm_count {idle:0, write:1, others:1}
+		RxRdy          => RxRdy_view_wire,				 		-- out  - valid data exist - fsm tdm_count {idle:0, write:1, others:1}
 		
-		TxValidData    => '0',		 							   --in - Valid Data, fsm tx_buffer {idle:0, read:1, waitread:1, write:0}
+		TxValidData    => TxValidData,		 					--in - Valid Data, fsm tx_buffer {idle:0, read:1, waitread:1, write:0}
 		TxWrite        => frame_start,			 			   --in - Write Byte, fsm tdm_count {idle:0, read:0, waitread:1, write:0}
 	   TxRdy          => TxRdy_view_wire,						--out- Ready to get data fsm tdm_count {"11":0,"00":0,"01":1,"others":0}
 
-		-- Signals
-		EnableSerialIF => '1',								   	-- wb -> 0 HDCL? verificar
+		-- Signal
+		EnableSerialIF => '0',								   	--  (EnableSerialIF = '1') THEN DSTo <= SerDi; ELSE DSTo <= Tx_reg(7);
 		SerDi => SerDi_wire,              						-- Serial Data in
 		SerDo => SerDo_wire,
 		DSTi_reg_aux => DSTi_reg_aux,
 		Rx_Reg_aux   => Rx_Reg_aux,
-		RxFlag_aux   => RxFlag_aux		
+		RxFlag_aux   => RxFlag_aux	,	
+		TxFlag_aux   => TxFlag_aux,   
+		Tx_Reg_aux   => Tx_Reg_aux,
+		Tx_reg_i_aux => Tx_reg_i_aux
 	);	
 		
 	reset <= '0' when TX_en = '1' else '1';
@@ -287,11 +369,6 @@ BEGIN
 	C2_SYS <= CLOCK_2M;
 	FS <= fs_wire;
 		
-	
-	--write_data_fifo_in_rx(7 downto 0) <= rxd_wire;
-	--write_data_fifo_in_rx(31 downto 8) <= (others => '0');
-	--write_data_fifo_out_tx(7 downto 0) <= txd_wire;
-	--write_data_fifo_out_tx(31 downto 8) <= (others => '0');
 	
 END system;
 
