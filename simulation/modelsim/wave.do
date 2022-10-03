@@ -40,7 +40,7 @@ view wave
 wave clipboard store
 wave create -driver freeze -pattern clock -initialvalue 0 -period 20ns -dutycycle 50 -starttime 0ms -endtime 2ms sim:/pji3_spi/CLOCK_50 
 wave create -driver freeze -pattern clock -initialvalue 0 -period 488ns -dutycycle 50 -starttime 0ms -endtime 2ms sim:/pji3_spi/CLOCK_2M  
-add wave -noupdate -divider {Debug TDM Cont TX}
+add wave -noupdate -divider {Debug TDM Cont RX}
 add wave -noupdate /pji3_spi/DXA_wire
 add wave -position end  sim:/pji3_spi/RxRdy_view_wire
 add wave -position end  sim:/pji3_spi/DSTi_reg_aux
@@ -48,14 +48,13 @@ add wave -position end  sim:/pji3_spi/Rx_Reg_aux
 add wave -position end  sim:/pji3_spi/RxFlag_aux
 add wave -noupdate -radix decimal /pji3_spi/rxd_wire
 add wave -position 23  sim:/pji3_spi/RxValidData
-add wave -noupdate -divider {Debug TDM Cont RX}
+add wave -noupdate -divider {Debug TDM Cont TX}
 add wave -position 22  sim:/pji3_spi/TxValidData
-add wave -position end  sim:/pji3_spi/TxRdy_view_wire
 add wave -position 20  sim:/pji3_spi/Tx_Reg_aux
 add wave -position 19  sim:/pji3_spi/TxFlag_aux
 add wave -position 21  -radix decimal sim:/pji3_spi/txd_wire
 add wave -position 23  sim:/pji3_spi/TDMO0
-
+add wave -position 24  sim:/pji3_spi/FramErr
 add wave -noupdate -divider {Fifo Tx}
 add wave -position end  sim:/pji3_spi/fifoTx_rdempty_wire
 add wave -position end  sim:/pji3_spi/fifoTx_wrfull_wire

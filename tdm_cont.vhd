@@ -168,6 +168,7 @@ BEGIN  -- tdm_cont_rtl
 
       CASE State IS
         WHEN IDLE_st =>
+			 -- aqui vai pra Z
           DSTo <= 'Z';
           Drop := '0';
 
@@ -377,7 +378,8 @@ BEGIN  -- tdm_cont_rtl
 
       IF TxDisable = '0' AND GetNew = '1' THEN
         Tx_reg <= Tx_reg_i;
-        TxFlag <= '1';
+		  --1
+        TxFlag <= '0';
 
       ELSE
         IF Tx_En = '1' THEN

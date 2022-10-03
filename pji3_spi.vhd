@@ -26,7 +26,8 @@ ENTITY pji3_spi IS
 		RxFlag_aux   			: OUT std_logic;
 		TxFlag_aux   			: OUT STD_LOGIC;
 		Tx_Reg_aux   			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		Tx_reg_i_aux 			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0)			
+		Tx_reg_i_aux 			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+		FramErr					: OUT STD_LOGIC		
 	);
 	
 END pji3_spi;
@@ -330,19 +331,19 @@ BEGIN
 		TxD            => txd_wire,									-- in Parellal Tx input		
 
 				-- Controle
-		NoChannels     => "00100",									-- in - Números time slot -> 111
+		NoChannels     => "10000",									-- in - Números time slot -> 111
 		DropChannels   => "00000",									-- in - Time slot to be dropped -> 000	
 		
 		-- Backend
 	   RxValidData    => RxValidData ,							-- out valid data strobe 	-> 1
-	--      FramErr        =>  ,  								-- out wb 						   -> 0		
+	   FramErr        => FramErr,  								-- out wb 						   -> 0		
 	
 		-- Backend
 		RxRead         => frame_end,    							-- in   - read byte, fsm rx_Buffer{idle:0, read:0, write:RxRdy, waitwrite:1}		
 		RxRdy          => RxRdy_view_wire,				 		-- out  - valid data exist - fsm tdm_count {idle:0, write:1, others:1}
 		
 		TxValidData    => TxValidData,		 					--in - Valid Data, fsm tx_buffer {idle:0, read:1, waitread:1, write:0}
-		TxWrite        => frame_start,			 			   --in - Write Byte, fsm tdm_count {idle:0, read:0, waitread:1, write:0}
+		TxWrite        => '1',			 			   	      --in - Write Byte, fsm tdm_count {idle:0, read:0, waitread:1, write:0}
 	   TxRdy          => TxRdy_view_wire,						--out- Ready to get data fsm tdm_count {"11":0,"00":0,"01":1,"others":0}
 
 		-- Signal
