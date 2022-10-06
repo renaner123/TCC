@@ -68,14 +68,9 @@ add wave -position end  sim:/pji3_spi/fifoRx_wrreq_control
 add wave -position end -radix decimal sim:/pji3_spi/fifoRx_out_wire
 force -freeze sim:/pji3_spi/KEY0 0 0
 force -freeze sim:/pji3_spi/reset 0 0
-force -freeze sim:/pji3_spi/TxValidData 1 0
-force -freeze sim:/pji3_spi/fifoRx_wrreq_control 1 0
-force -freeze sim:/pji3_spi/fifoRx_rdreq_control 1 0
-force -freeze sim:/pji3_spi/fifoTx_rdreq_control 1 0
-force -freeze sim:/pji3_spi/fifoTx_wrreq_control 1 0
 run 500 ns
 noforce sim:/pji3_spi/KEY0
 noforce sim:/pji3_spi/reset
-run 150000 ns
+run 200000 ns
 WaveCollapseAll -1
 wave clipboard restore

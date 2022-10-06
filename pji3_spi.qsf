@@ -108,6 +108,6 @@ set_global_assignment -name VHDL_FILE pji3_spi.vhd
 set_global_assignment -name VHDL_FILE tdm_cont.vhd
 set_global_assignment -name VHDL_FILE gerador.vhd
 set_global_assignment -name VHDL_FILE fifo_controller.vhd
-set_global_assignment -name QIP_FILE fifotx.qip
 set_global_assignment -name QIP_FILE fiforx.qip
+set_global_assignment -name QIP_FILE fifotx.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

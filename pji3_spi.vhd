@@ -113,6 +113,9 @@ ARCHITECTURE system OF pji3_spi IS
 			  FS, reset          : IN std_logic;   
 			  --fifo rx 
 			  rdreq_fiforx			: OUT std_logic;									-- 1 lê o bit da fifo, 0 não lê
+			  TxValidData			: OUT std_logic;
+			  frame_num 			: in std_logic_vector(4 downto 0);
+			  RxValidData			: in std_logic;
 			  wrreq_fiforx			: OUT std_logic;									-- 1 escreve na fifo, 0 não escreve
 			  rdempty_fixorx		: IN std_logic;									-- 0 tem dados na fifo
 			  wrfull_fiforx		: IN std_logic; 									-- 1 fifo está cheia
@@ -275,6 +278,9 @@ BEGIN
 		  --fifo rx 
 		  rdreq_fiforx		=>	fifoRx_rdreq_control,
 		  wrreq_fiforx		=>	fifoRx_wrreq_control,	
+		  TxValidData		=> TxValidData,
+		  frame_num 		=> frame_num,
+		  RxValidData	   => RxValidData, 
 		  rdempty_fixorx	=>	fifoRx_rdempty_wire,
 		  wrfull_fiforx	=>	fifoRx_wrfull_wire,	
 		  --fifo tx
