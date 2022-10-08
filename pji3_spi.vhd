@@ -24,7 +24,6 @@ ENTITY pji3_spi IS
 		DSTi_reg_aux 			: OUT std_logic;
 		Rx_Reg_aux   			: OUT std_logic_vector(7 DOWNTO 0);
 		RxFlag_aux   			: OUT std_logic;
-		TxFlag_aux   			: OUT STD_LOGIC;
 		Tx_Reg_aux   			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
 		Tx_reg_i_aux 			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
 		FramErr					: OUT STD_LOGIC		
@@ -115,6 +114,7 @@ ARCHITECTURE system OF pji3_spi IS
 			  rdreq_fiforx			: OUT std_logic;									-- 1 lê o bit da fifo, 0 não lê
 			  TxValidData			: OUT std_logic;
 			  frame_num 			: in std_logic_vector(4 downto 0);
+			  TxFlag_aux			: in std_logic;
 			  RxValidData			: in std_logic;
 			  wrreq_fiforx			: OUT std_logic;									-- 1 escreve na fifo, 0 não escreve
 			  rdempty_fixorx		: IN std_logic;									-- 0 tem dados na fifo
@@ -223,6 +223,7 @@ ARCHITECTURE system OF pji3_spi IS
 	SIGNAL fifoTx_wrfull_wire  : std_logic;	
 	SIGNAL fifoTx_rdreq_control: std_logic;
 	SIGNAL fifoTx_wrreq_control : std_logic;
+	SIGNAL TxFlag_aux : std_logic;
 	
 	SIGNAL TxValidData : std_logic;
 	SIGNAL RxValidData : std_logic;
@@ -250,7 +251,7 @@ BEGIN
 		
 	fifo_catalog_rx : component fiforx port map (
 			data		=>	rxd_wire,
-			rdclk		=> CLOCK_50,
+			rdclk		=> CLOCK_2M,
 			rdreq		=> fifoRx_rdreq_control,
 			wrclk		=> CLOCK_2M,
 			wrreq		=> fifoRx_wrreq_control,
@@ -261,9 +262,9 @@ BEGIN
 	
 	fifo_catalog_tx : component fifotx port map (
 			data		=> fifoRx_out_wire,
-			rdclk		=> CLOCK_50,
+			rdclk		=> CLOCK_2M,
 			rdreq		=> fifoTx_rdreq_control,
-			wrclk		=> CLOCK_50 ,
+			wrclk		=> CLOCK_2M ,
 			wrreq		=> fifoTx_wrreq_control,
 			q			=> txd_wire,
 			rdempty	=>	fifoTx_rdempty_wire,
@@ -279,6 +280,7 @@ BEGIN
 		  rdreq_fiforx		=>	fifoRx_rdreq_control,
 		  wrreq_fiforx		=>	fifoRx_wrreq_control,	
 		  TxValidData		=> TxValidData,
+		  TxFlag_aux		=> TxFlag_aux,
 		  frame_num 		=> frame_num,
 		  RxValidData	   => RxValidData, 
 		  rdempty_fixorx	=>	fifoRx_rdempty_wire,
@@ -337,7 +339,7 @@ BEGIN
 		TxD            => txd_wire,									-- in Parellal Tx input		
 
 				-- Controle
-		NoChannels     => "10000",									-- in - Números time slot -> 111
+		NoChannels     => "11111",									-- in - Números time slot -> 111
 		DropChannels   => "00000",									-- in - Time slot to be dropped -> 000	
 		
 		-- Backend

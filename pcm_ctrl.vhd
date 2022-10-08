@@ -23,7 +23,7 @@ begin
 	begin
 		if (reset = '0') then
 			r_reg8 <= (others => '0');
-			r_reg32 <= (others => '0');
+			r_reg32 <= "00000";
 		elsif (Pclk'event and Pclk = '1') then
 			r_reg8 <= r_next8;
 			r_reg32 <= r_next32;
