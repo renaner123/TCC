@@ -53,6 +53,8 @@
 !**/class.ptf
 !*.tbd
 !*.sof
+!*.sopcinfo
+!*.sdc
 ## tbd
 
 !*.tcl

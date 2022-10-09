@@ -37,12 +37,6 @@ ARCHITECTURE system OF pji3_spi IS
         port (
             clk_clk                  : in  std_logic                     := 'X';             -- clk
             clk_2m_clk               : out std_logic;                                        -- clk
-            fifo_rx_in_writedata     : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
-            fifo_rx_in_write         : in  std_logic                     := 'X';             -- write
-            fifo_rx_in_waitrequest   : out std_logic;                                        -- waitrequest
-            fifo_tx_out_readdata     : out std_logic_vector(31 downto 0);                    -- readdata
-            fifo_tx_out_read         : in  std_logic                     := 'X';             -- read
-            fifo_tx_out_waitrequest  : out std_logic;                                        -- waitrequest
             reset_reset_n            : in  std_logic                     := 'X';             -- reset_n
             spi_master_external_MISO : in  std_logic                     := 'X';             -- MISO
             spi_master_external_MOSI : out std_logic;                                        -- MOSI
@@ -197,13 +191,7 @@ ARCHITECTURE system OF pji3_spi IS
 	SIGNAL DSTi_wire : std_logic;     
 	-- sinais tdm cont
 	SIGNAL F0od_n_wire: std_logic;
-	signal write_data_fifo_in_rx : std_logic_vector(31 downto 0);
-	signal write_data_fifo_out_tx : std_logic_vector(31 downto 0);
-	signal waitrequest_fifo_rx : std_logic;
-	signal waitrequest_fifo_tx : std_logic;
 	signal reset : std_logic;
-	SIGNAL write_fifo_rx      : std_logic;  
-	SIGNAL write_fifo_tx      : std_logic;	
 	SIGNAL DXA_wire : std_logic;
 	SIGNAL RxRdy_view_wire : std_logic;
 	SIGNAL TxRdy_view_wire : std_logic;
@@ -241,12 +229,6 @@ BEGIN
 	  port map (
 			clk_clk                  => CLOCK_50,                  	--                 clk.clk
 			--clk_2m_clk               => clk_2M,               			--              clk_2m.clk
-			fifo_rx_in_writedata     => write_data_fifo_in_rx,     	--          fifo_rx_in.writedata
-			fifo_rx_in_write         => write_fifo_rx,         		--                    .write
-			fifo_rx_in_waitrequest   => waitrequest_fifo_rx,   		--                    .waitrequest
-			fifo_tx_out_readdata     => write_data_fifo_out_tx,     	--         fifo_tx_out.readdata
-			fifo_tx_out_read         => write_fifo_tx,         		--                    .read
-			fifo_tx_out_waitrequest  => waitrequest_fifo_tx,  			--                    .waitrequest
 			reset_reset_n            => KEY0,            				--               reset.reset_n
 			spi_master_external_MISO => MISO_m, 							-- spi_master_external.MISO
 			spi_master_external_MOSI => MOSI_m, 							--                    .MOSI
@@ -376,8 +358,6 @@ BEGIN
 	);	
 		
 	reset <= '0' when TX_en = '1' else '1';
-	write_fifo_rx <= '1' when waitrequest_fifo_rx = '0' else '1';
-	write_fifo_tx <= '1' when waitrequest_fifo_tx = '0' else '1';
 	
 	DIO <= MOSI_m when TX_en = '1' else 'Z';
 	MISO_m <= DIO when TX_en = '0' else 'Z';
