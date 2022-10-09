@@ -10,23 +10,15 @@ ENTITY pji3_spi IS
 	PORT
 	(
 		CLOCK_50  				: IN  std_logic;		
-		CLOCK_2M					: IN std_logic;		
-		KEY0	    				: IN std_logic;		--reset
+		RST	    				: IN std_logic;		--reset
 		DIO       				: INOUT std_logic; 	--IOC
 		DCLK		 				: OUT std_logic;   	--CLK	
 		FS        				: OUT std_logic;  	--F0_SYS
 		C2_SYS    				: OUT std_logic;  	-- C2_SYS/PCLK		
 		CS  		 				: OUT std_logic;   	--CSRAMAL
-		INT 		 				: IN std_logic;   	--INTCDC	
+		--INT 		 				: IN std_logic;   	--INTCDC	
 		TDMI0		 				: IN std_logic ;		--DXA
-		TDMO0	    				: OUT std_logic;		--DRA
-		--DXA						: out std_logic
-		DSTi_reg_aux 			: OUT std_logic;
-		Rx_Reg_aux   			: OUT std_logic_vector(7 DOWNTO 0);
-		RxFlag_aux   			: OUT std_logic;
-		Tx_Reg_aux   			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		Tx_reg_i_aux 			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		FramErr					: OUT STD_LOGIC		
+		TDMO0	    				: OUT std_logic		--DRA		
 	);
 	
 END pji3_spi;
@@ -37,18 +29,13 @@ ARCHITECTURE system OF pji3_spi IS
         port (
             clk_clk                  : in  std_logic                     := 'X';             -- clk
             clk_2m_clk               : out std_logic;                                        -- clk
-            fifo_rx_in_writedata     : in  std_logic_vector(31 downto 0) := (others => 'X'); -- writedata
-            fifo_rx_in_write         : in  std_logic                     := 'X';             -- write
-            fifo_rx_in_waitrequest   : out std_logic;                                        -- waitrequest
-            fifo_tx_out_readdata     : out std_logic_vector(31 downto 0);                    -- readdata
-            fifo_tx_out_read         : in  std_logic                     := 'X';             -- read
-            fifo_tx_out_waitrequest  : out std_logic;                                        -- waitrequest
             reset_reset_n            : in  std_logic                     := 'X';             -- reset_n
             spi_master_external_MISO : in  std_logic                     := 'X';             -- MISO
             spi_master_external_MOSI : out std_logic;                                        -- MOSI
             spi_master_external_SCLK : out std_logic;                                        -- SCLK
             spi_master_external_SS_n : out std_logic;                                        -- SS_n
-            tx_en_export             : out std_logic                                         -- export
+            tx_en_export             : out std_logic;                                        -- export
+				rst_qsys_export          : out std_logic                                         -- export
         );
     end component DE2_115_SOPC_bridge_pll;
 	
@@ -61,7 +48,7 @@ ARCHITECTURE system OF pji3_spi IS
 	  );
 	end component frame_sync;
 
-	--pcm_ctrl e pcm_tx_tb sao usados para gerar a saida DXA
+	--pcm_ctrl e pcm_tx_tb sao usados para controlar o tdm cont
 	component pcm_ctrl is
 		port (
 			reset, Pclk, fs: in std_logic;
@@ -69,14 +56,6 @@ ARCHITECTURE system OF pji3_spi IS
 			frame_num : out std_logic_vector(4 downto 0)
 		);
 	end component;
-
-	component pcm_tx_tb is
-    port (
-        frame_start, frame_end, fs, Pclk, reset : in std_logic;
-        frame_num                               : in std_logic_vector(7 downto 0);
-        DXA                                     : out std_logic
-    );
-	end component;	
 	
 	component fiforx IS
 		PORT
@@ -114,7 +93,6 @@ ARCHITECTURE system OF pji3_spi IS
 			  rdreq_fiforx			: OUT std_logic;									-- 1 lê o bit da fifo, 0 não lê
 			  TxValidData			: OUT std_logic;
 			  frame_num 			: in std_logic_vector(4 downto 0);
-			  TxFlag_aux			: in std_logic;
 			  RxValidData			: in std_logic;
 			  wrreq_fiforx			: OUT std_logic;									-- 1 escreve na fifo, 0 não escreve
 			  rdempty_fixorx		: IN std_logic;									-- 0 tem dados na fifo
@@ -126,10 +104,7 @@ ARCHITECTURE system OF pji3_spi IS
 			  wrfull_fifotx		: IN std_logic 									-- 1 fifo está cheia
 		 );
 	END component fifo_controller;	
-	
-	
-	
-	
+		
 	component tdm_cont_ent IS
 		PORT (
 		 rst_n  : IN  std_logic;             					-- System asynchronous reset
@@ -159,27 +134,10 @@ ARCHITECTURE system OF pji3_spi IS
 		 TxRdy       	: OUT std_logic;                     	-- Byte Ready
 
 		 -- Serial Interfaces
-		 EnableSerialIF: IN std_logic;      					-- Enable Serial Interface
+		 EnableSerialIF: IN std_logic      					-- Enable Serial Interface
 
-		 Tx_en0 			: OUT std_logic;             					-- Tx enable channel 0
-		 Tx_en1 			: OUT std_logic;             					-- Tx enable channel 1
-		 Tx_en2 			: OUT std_logic;             					-- Tx enable channel 2
 
-		 Rx_en0 			: OUT std_logic;             					-- Rx enable channel 0
-		 Rx_en1 			: OUT std_logic;             					-- Rx enable channel 1
-		 Rx_en2 			: OUT std_logic;             					-- Rx enable channel 2
-		 SerDo 			: OUT std_logic;              					-- serial Data out
-		 SerDi 			: IN  std_logic;               					-- Serial Data in
-		 -- Debug
-		DSTi_reg_aux 	: OUT std_logic;
-		Rx_Reg_aux   	: OUT std_logic_vector(7 DOWNTO 0);
-	   RxFlag_aux   	: OUT std_logic; 	
-		TxFlag_aux   	: OUT STD_LOGIC;
-		Tx_Reg_aux   	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		Tx_reg_i_aux 	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		TxDisable_aux  : OUT std_logic;
-		ExtendFrame_delay : OUT STD_LOGIC;
-	   bit_counter : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+ 
 		 ); 
 	 end component tdm_cont_ent;
 
@@ -188,23 +146,15 @@ ARCHITECTURE system OF pji3_spi IS
 	SIGNAL SCLK : std_logic;
 	SIGNAL SS_n : std_logic;
 	SIGNAL TX_en: std_logic;
+	SIGNAL rst_qsys: std_logic;
 	SIGNAL fs_wire : std_logic;
 	SIGNAL clk_2M : std_logic;
-
-	SIGNAL SerDo_wire  : std_logic;
-	SIGNAL SerDi_wire  : std_logic;     
+  
 	SIGNAL DSTo_wire : std_logic;
 	SIGNAL DSTi_wire : std_logic;     
 	-- sinais tdm cont
 	SIGNAL F0od_n_wire: std_logic;
-	signal write_data_fifo_in_rx : std_logic_vector(31 downto 0);
-	signal write_data_fifo_out_tx : std_logic_vector(31 downto 0);
-	signal waitrequest_fifo_rx : std_logic;
-	signal waitrequest_fifo_tx : std_logic;
 	signal reset : std_logic;
-	SIGNAL write_fifo_rx      : std_logic;  
-	SIGNAL write_fifo_tx      : std_logic;	
-	SIGNAL DXA_wire : std_logic;
 	SIGNAL RxRdy_view_wire : std_logic;
 	SIGNAL TxRdy_view_wire : std_logic;
 	SIGNAL TDMI0_wire : std_logic;
@@ -226,13 +176,12 @@ ARCHITECTURE system OF pji3_spi IS
 	SIGNAL fifoTx_wrfull_wire  : std_logic;	
 	SIGNAL fifoTx_rdreq_control: std_logic;
 	SIGNAL fifoTx_wrreq_control : std_logic;
-	SIGNAL TxFlag_aux : std_logic;
 	
 	SIGNAL TxValidData : std_logic;
 	SIGNAL RxValidData : std_logic;
    SIGNAL TxDisable_aux : STD_LOGIC;
 	SIGNAL ExtendFrame_delay : std_logic;
-	SIGNAL bit_counter : STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL FramErr : std_logic;
 	
 BEGIN 
 	 
@@ -240,26 +189,21 @@ BEGIN
 	 u0 : component DE2_115_SOPC_bridge_pll
 	  port map (
 			clk_clk                  => CLOCK_50,                  	--                 clk.clk
-			--clk_2m_clk               => clk_2M,               			--              clk_2m.clk
-			fifo_rx_in_writedata     => write_data_fifo_in_rx,     	--          fifo_rx_in.writedata
-			fifo_rx_in_write         => write_fifo_rx,         		--                    .write
-			fifo_rx_in_waitrequest   => waitrequest_fifo_rx,   		--                    .waitrequest
-			fifo_tx_out_readdata     => write_data_fifo_out_tx,     	--         fifo_tx_out.readdata
-			fifo_tx_out_read         => write_fifo_tx,         		--                    .read
-			fifo_tx_out_waitrequest  => waitrequest_fifo_tx,  			--                    .waitrequest
-			reset_reset_n            => KEY0,            				--               reset.reset_n
+			clk_2m_clk               => clk_2M,               			--              clk_2m.clk
+			reset_reset_n            => RST,            				--               reset.reset_n
 			spi_master_external_MISO => MISO_m, 							-- spi_master_external.MISO
 			spi_master_external_MOSI => MOSI_m, 							--                    .MOSI
 			spi_master_external_SCLK => SCLK, 								--                    .SCLK
 			spi_master_external_SS_n => SS_n, 								--                    .SS_n
-			tx_en_export             => TX_en              				--               tx_en.export
+			tx_en_export             => TX_en ,             			--               tx_en.export
+			rst_qsys_export			 => rst_qsys							--               rst_qsys.export					
 	  );
 		
 	fifo_catalog_rx : component fiforx port map (
 			data		=>	rxd_wire,
-			rdclk		=> CLOCK_2M,
+			rdclk		=> clk_2M,
 			rdreq		=> fifoRx_rdreq_control,
-			wrclk		=> CLOCK_2M,
+			wrclk		=> clk_2M,
 			wrreq		=> fifoRx_wrreq_control,
 			q			=> fifoRx_out_wire,
 			rdempty	=>	fifoRx_rdempty_wire,
@@ -268,9 +212,9 @@ BEGIN
 	
 	fifo_catalog_tx : component fifotx port map (
 			data		=> fifoRx_out_wire,
-			rdclk		=> CLOCK_2M,
+			rdclk		=> clk_2M,
 			rdreq		=> fifoTx_rdreq_control,
-			wrclk		=> CLOCK_2M ,
+			wrclk		=> clk_2M ,
 			wrreq		=> fifoTx_wrreq_control,
 			q			=> txd_wire,
 			rdempty	=>	fifoTx_rdempty_wire,
@@ -279,14 +223,13 @@ BEGIN
 	
 	fifo_controller_top : component fifo_controller 
 		port map (
-		  pclk  		=>	CLOCK_2M,	
+		  pclk  		=>	clk_2M,	
 		  FS					=> fs_wire,
 		  reset        	=> reset,
 		  --fifo rx 
 		  rdreq_fiforx		=>	fifoRx_rdreq_control,
 		  wrreq_fiforx		=>	fifoRx_wrreq_control,	
 		  TxValidData		=> TxValidData,
-		  TxFlag_aux		=> TxFlag_aux,
 		  frame_num 		=> frame_num,
 		  RxValidData	   => RxValidData, 
 		  rdempty_fixorx	=>	fifoRx_rdempty_wire,
@@ -300,7 +243,7 @@ BEGIN
 
 	
  	frame_strobe : component frame_sync port map(
-		 pclk  => CLOCK_2M,   
+		 pclk  => clk_2M,   
 		 reset  => reset,  
 		 strobe => fs_wire  
 		);
@@ -308,25 +251,13 @@ BEGIN
 	 pcm_ctrl_inst: pcm_ctrl
 		port map(
 			reset => reset,
-			Pclk => CLOCK_2M,
+			Pclk => clk_2M,
 			fs => fs_wire,
 			frame_start => frame_start,
 			frame_end => frame_end,
 			frame_num => frame_num
 		);
-		frame_num_aux <= "000"&frame_num;
-		
-	pcm_tx_tb_inst: pcm_tx_tb
-    port map(
-       frame_start => frame_start, 
-		  frame_end => frame_end, 
-		  fs => fs_wire, 
-		  Pclk => CLOCK_2M, 
-		  reset => reset,
-        frame_num => frame_num_aux,
-        DXA => DXA_wire
-    );		
-		
+		frame_num_aux <= "000"&frame_num;	
 		
 	--Para entrar com o a saida do DXA deve alterar o DSTi_wire para DXA_wire na porta DSTi
 	tdm_cont : tdm_cont_ent PORT MAP (	 
@@ -334,8 +265,8 @@ BEGIN
 		CLK_I          => CLOCK_50,								-- System clock
 		
 		-- ST-Bus
-		C2             => CLOCK_2M,									-- ST-Bus Clock
-		DSTi           => DXA_wire,								-- in ST-Bus input Data
+		C2             => clk_2M,									-- ST-Bus Clock
+		DSTi           => TDMI0,								-- in ST-Bus input Data
 		DSTo           => TDMO0,								-- out ST-Bus output Data
 		F0_n           => fs_wire,									-- IN ST-Bus framing pulse
 		F0od_n         => F0od_n_wire,							-- out ST-Bus delayed framing pulse
@@ -361,30 +292,19 @@ BEGIN
 	   TxRdy          => TxRdy_view_wire,						--out- Ready to get data fsm tdm_count {"11":0,"00":0,"01":1,"others":0}
 
 		-- Signal
-		EnableSerialIF => '0',								   	--  (EnableSerialIF = '1') THEN DSTo <= SerDi; ELSE DSTo <= Tx_reg(7);
-		SerDi => SerDi_wire,              						-- Serial Data in
-		SerDo => SerDo_wire,
-		DSTi_reg_aux => DSTi_reg_aux,
-		Rx_Reg_aux   => Rx_Reg_aux,
-		RxFlag_aux   => RxFlag_aux	,	
-		TxFlag_aux   => TxFlag_aux,   
-		Tx_Reg_aux   => Tx_Reg_aux,
-		Tx_reg_i_aux => Tx_reg_i_aux,
-		TxDisable_aux => TxDisable_aux,
-		ExtendFrame_delay => ExtendFrame_delay,
-		bit_counter => bit_counter
+		EnableSerialIF => '0'								   	--  (EnableSerialIF = '1') THEN DSTo <= SerDi; ELSE DSTo <= Tx_reg(7);
+
+
 	);	
 		
-	reset <= '0' when TX_en = '1' else '1';
-	write_fifo_rx <= '1' when waitrequest_fifo_rx = '0' else '1';
-	write_fifo_tx <= '1' when waitrequest_fifo_tx = '0' else '1';
+	reset <= '0' when rst_qsys = '1' else '1';
 	
 	DIO <= MOSI_m when TX_en = '1' else 'Z';
 	MISO_m <= DIO when TX_en = '0' else 'Z';
 	
 	DCLK <= SCLK;
 	CS   <= SS_n;
-	C2_SYS <= CLOCK_2M;
+	C2_SYS <= clk_2M;
 	FS <= fs_wire;
 		
 	

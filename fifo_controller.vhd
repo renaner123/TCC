@@ -27,7 +27,6 @@ END;
 -- Descrição de como o circuito deve funcionar
 ARCHITECTURE fifo_controller OF fifo_controller IS
     TYPE States_type IS (IDLE_st, WRITE_st);   --States type
-    SIGNAL state : States_type;                         -- FSM state
 
 BEGIN
 
@@ -36,7 +35,6 @@ variable count : integer range 0 to 3;
 
 begin
     if (reset = '0') then
-        state        <= IDLE_st;
         rdreq_fifotx <= '0' ;
         wrreq_fifotx <= '0' ;
         rdreq_fiforx <= '0' ;

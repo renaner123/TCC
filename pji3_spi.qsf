@@ -40,6 +40,7 @@
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE115F29C7
 set_global_assignment -name TOP_LEVEL_ENTITY pji3_spi
+set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 20.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "10:06:48  FEBRUARY 01, 2022"
 set_global_assignment -name LAST_QUARTUS_VERSION "18.1.0 Standard Edition"
@@ -53,22 +54,6 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
 set_location_assignment PIN_Y2 -to CLOCK_50
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLOCK_50
-set_location_assignment PIN_E21 -to LEDG[0]
-set_location_assignment PIN_E22 -to LEDG[1]
-set_location_assignment PIN_E25 -to LEDG[2]
-set_location_assignment PIN_E24 -to LEDG[3]
-set_location_assignment PIN_H21 -to LEDG[4]
-set_location_assignment PIN_G20 -to LEDG[5]
-set_location_assignment PIN_G22 -to LEDG[6]
-set_location_assignment PIN_G21 -to LEDG[7]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to LEDG[0]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to LEDG[1]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to LEDG[2]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to LEDG[3]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to LEDG[4]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to LEDG[5]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to LEDG[6]
-set_instance_assignment -name IO_STANDARD "2.5 V" -to LEDG[7]
 set_location_assignment PIN_M23 -to KEY0
 set_instance_assignment -name IO_STANDARD "2.5 V" -to KEY0
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
@@ -97,12 +82,12 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to TDMI0
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to TDMO0
 set_location_assignment PIN_AG23 -to TDMI0
 set_location_assignment PIN_AD22 -to TDMO0
-set_global_assignment -name SIP_FILE DE2_115_SOPC_bridge_pll/simulation/DE2_115_SOPC_bridge_pll.sip
-set_global_assignment -name QIP_FILE DE2_115_SOPC_bridge_pll/synthesis/DE2_115_SOPC_bridge_pll.qip
+set_global_assignment -name SIP_FILE DE2_115_SOPC_sem_fifol/simulation/DE2_115_SOPC_bridge_pll.sip
+set_global_assignment -name QIP_FILE DE2_115_SOPC_sem_fifol/synthesis/DE2_115_SOPC_bridge_pll.qip
 set_global_assignment -name VHDL_FILE pcm_tx_tb.vhd
 set_global_assignment -name VHDL_FILE pcm_ctrl.vhd
 set_global_assignment -name VHDL_FILE frame_sync.vhd
-set_global_assignment -name VHDL_FILE "../../Users/renan/OneDrive/�?rea de Trabalho/tdm-master/code/libs/components_pkg.vhd"
+set_global_assignment -name VHDL_FILE "../../Users/renan/OneDrive/�?rea de Trabalho/tdm-master/code/libs/components_pkg.vhd"
 set_global_assignment -name SDC_FILE nios2.sdc
 set_global_assignment -name VHDL_FILE pji3_spi.vhd
 set_global_assignment -name VHDL_FILE tdm_cont.vhd
