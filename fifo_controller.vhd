@@ -32,7 +32,7 @@ ARCHITECTURE fifo_controller OF fifo_controller IS
 BEGIN
 
 process (pclk, reset, FS, TxFlag_aux) is
-variable count : std_logic;
+variable count : integer range 0 to 3;
 
 begin
     if (reset = '0') then
@@ -42,29 +42,36 @@ begin
         rdreq_fiforx <= '0' ;
         wrreq_fiforx <= '0' ;   
 		  TxValidData 	<= '0' ;
+		  count 			:=  0 ;
     elsif (pclk'event and pclk = '1') then 	 
  
-
+		if(FS = '1') then
+		-- para não ativar o TxValidData no primeiro FS
+			if (count < 3) then
+				count := count + 1;
+			end if;
+		end if;
 							
 		if(RxValidData = '1') then
-			wrreq_fifotx <= '1' ;
-			rdreq_fiforx <= '1';
 			wrreq_fiforx <= '1';
-			state <= WRITE_st;
+			rdreq_fiforx <= '1';
+			if(rdempty_fixorx = '0') then
+				wrreq_fifotx <= '1' ;
+			end if;
 		else
-			wrreq_fifotx <= '0' ;
-			rdreq_fiforx <= '0';
-			wrreq_fiforx <= '0';	
+			wrreq_fiforx <= '0';
+			rdreq_fiforx <= '0';	
 		end if;
 		
 
-		if(FS = '1' and frame_num > "00000") then
-			TxValidData <= '1';			
+		if(FS = '1' and count > 1) then
+		   rdreq_fifotx <= '1';
+			TxValidData <= '1';		
 		end if;				
 						
-		if(wrfull_fifotx = '1') then
-		  rdreq_fifotx <= '1';
-		end if;
+--		if(wrfull_fifotx = '1') then
+--		  rdreq_fifotx <= '1';
+--		end if;
 
 
  end if;

@@ -176,7 +176,10 @@ ARCHITECTURE system OF pji3_spi IS
 	   RxFlag_aux   	: OUT std_logic; 	
 		TxFlag_aux   	: OUT STD_LOGIC;
 		Tx_Reg_aux   	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		Tx_reg_i_aux 	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+		Tx_reg_i_aux 	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+		TxDisable_aux  : OUT std_logic;
+		ExtendFrame_delay : OUT STD_LOGIC;
+	   bit_counter : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
 		 ); 
 	 end component tdm_cont_ent;
 
@@ -227,6 +230,9 @@ ARCHITECTURE system OF pji3_spi IS
 	
 	SIGNAL TxValidData : std_logic;
 	SIGNAL RxValidData : std_logic;
+   SIGNAL TxDisable_aux : STD_LOGIC;
+	SIGNAL ExtendFrame_delay : std_logic;
+	SIGNAL bit_counter : STD_LOGIC_VECTOR(7 DOWNTO 0);
 	
 BEGIN 
 	 
@@ -363,7 +369,10 @@ BEGIN
 		RxFlag_aux   => RxFlag_aux	,	
 		TxFlag_aux   => TxFlag_aux,   
 		Tx_Reg_aux   => Tx_Reg_aux,
-		Tx_reg_i_aux => Tx_reg_i_aux
+		Tx_reg_i_aux => Tx_reg_i_aux,
+		TxDisable_aux => TxDisable_aux,
+		ExtendFrame_delay => ExtendFrame_delay,
+		bit_counter => bit_counter
 	);	
 		
 	reset <= '0' when TX_en = '1' else '1';

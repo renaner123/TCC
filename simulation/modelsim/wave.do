@@ -55,6 +55,7 @@ add wave -position 19  sim:/pji3_spi/TxFlag_aux
 add wave -position 21  -radix decimal sim:/pji3_spi/txd_wire
 add wave -position 23  sim:/pji3_spi/TDMO0
 add wave -position 24  sim:/pji3_spi/FramErr
+add wave -position 24  sim:/pji3_spi/TxDisable_aux
 add wave -noupdate -divider {Fifo Tx}
 add wave -position end  sim:/pji3_spi/fifoTx_rdempty_wire
 add wave -position end  sim:/pji3_spi/fifoTx_wrfull_wire
@@ -71,6 +72,6 @@ force -freeze sim:/pji3_spi/reset 0 0
 run 500 ns
 noforce sim:/pji3_spi/KEY0
 noforce sim:/pji3_spi/reset
-run 200000 ns
+run 270000 ns
 WaveCollapseAll -1
 wave clipboard restore

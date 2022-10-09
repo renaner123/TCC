@@ -97,7 +97,10 @@ ENTITY tdm_cont_ent IS
 	 
 	 TxFlag_aux   : OUT STD_LOGIC;
 	 Tx_Reg_aux   : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-   Tx_reg_i_aux : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+    Tx_reg_i_aux : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+	 TxDisable_aux : OUT STD_LOGIC;
+	 ExtendFrame_delay : OUT STD_LOGIC;
+	 bit_counter : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
     );
 
 END tdm_cont_ent;
@@ -206,6 +209,7 @@ BEGIN  -- tdm_cont_rtl
           IF C2 = '1' THEN
 
             IF counter >= drop_count THEN
+				  TxDisable_aux <= TxDisable;
               IF TxDisable = '1' THEN
                 DSTo  <= '1';
                 Tx_En <= '0';
@@ -266,8 +270,10 @@ BEGIN  -- tdm_cont_rtl
           END IF;
 
       END CASE;
-
+	 bit_counter <= counter;
+    ExtendFrame_delay <= ExtendFrame;
     END IF;
+	 
   END PROCESS fsm;
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
