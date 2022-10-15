@@ -88,8 +88,7 @@ ENTITY tdm_cont_ent IS
     Rx_en2 : OUT STD_LOGIC;             -- Rx enable channel 2
 
     SerDo : OUT STD_LOGIC;              -- serial Data out
-    SerDi : IN  STD_LOGIC;               -- Serial Data in
-	 tx_count_wire  : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+    SerDi : IN  STD_LOGIC               -- Serial Data in
     );
 
 END tdm_cont_ent;
@@ -390,7 +389,6 @@ BEGIN  -- tdm_cont_rtl
 
           END IF;
 		  --wire
-	     tx_count_wire <= Tx_count;
 
         ELSE
           TxFlag <= '0';

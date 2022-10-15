@@ -110,7 +110,6 @@ ARCHITECTURE system OF pji3_spi IS
 			  rdreq_fifotx			: OUT std_logic;									-- 1 lê o bit da fifo, 0 não lê
 			  wrreq_fifotx			: OUT std_logic;									-- 1 escreve na fifo, 0 não escreve
 			  rdempty_fixotx		: IN std_logic;									-- 0 tem dados na fifo
-	        tx_count_wire  		: IN STD_LOGIC_VECTOR(2 DOWNTO 0);	
 		     tx_write				: OUT STD_LOGIC;		  
 			  wrfull_fifotx		: IN std_logic 									-- 1 fifo está cheia
 		 );
@@ -156,8 +155,7 @@ ARCHITECTURE system OF pji3_spi IS
 		 Rx_en1 			: OUT std_logic;             					-- Rx enable channel 1
 		 Rx_en2 			: OUT std_logic;             					-- Rx enable channel 2
 		 SerDo 			: OUT std_logic;              				-- serial Data out
-		 SerDi 			: IN  std_logic;              					-- Serial Data in
-		 tx_count_wire  : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+		 SerDi 			: IN  std_logic            					-- Serial Data in
 
 		 ); 
 	 end component tdm_cont_ent;
@@ -202,7 +200,6 @@ ARCHITECTURE system OF pji3_spi IS
 	
 	SIGNAL TxValidData : std_logic;
 	SIGNAL RxValidData : std_logic;
-	SIGNAL tx_count_wire  : STD_LOGIC_VECTOR(2 DOWNTO 0);
 	SIGNAL tx_write : std_logic;
 	
 BEGIN 
@@ -260,7 +257,6 @@ BEGIN
 		  wrreq_fifotx		=>	fifoTx_wrreq_control,	
 		  rdempty_fixotx	=>	fifoTx_rdempty_wire,
 		  tx_write		   => tx_write,
-		  tx_count_wire   => tx_count_wire,
 		  wrfull_fifotx	=>	fifoTx_wrfull_wire	
 		 );
 
@@ -329,8 +325,7 @@ BEGIN
 		-- Signal
 		EnableSerialIF => '0',								   	--  (EnableSerialIF = '1') THEN DSTo <= SerDi; ELSE DSTo <= Tx_reg(7);
 		SerDi => SerDi_wire,              						-- Serial Data in
-		SerDo => SerDo_wire,
-		tx_count_wire => tx_count_wire
+		SerDo => SerDo_wire
 
 	);	
 		
