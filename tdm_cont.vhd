@@ -89,18 +89,7 @@ ENTITY tdm_cont_ent IS
 
     SerDo : OUT STD_LOGIC;              -- serial Data out
     SerDi : IN  STD_LOGIC;               -- Serial Data in
-
-	 -- Debug
-	 DSTi_reg_aux : OUT STD_LOGIC;
-	 Rx_Reg_aux   : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-	 RxFlag_aux   : OUT STD_LOGIC;
-	 
-	 TxFlag_aux   : OUT STD_LOGIC;
-	 Tx_Reg_aux   : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-    Tx_reg_i_aux : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-	 TxDisable_aux : OUT STD_LOGIC;
-	 ExtendFrame_delay : OUT STD_LOGIC;
-	 bit_counter : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+	 tx_count_wire  : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
     );
 
 END tdm_cont_ent;
@@ -132,12 +121,13 @@ ARCHITECTURE tdm_cont_rtl OF tdm_cont_ent IS
   SIGNAL EnableRegister : STD_LOGIC_VECTOR(31 DOWNTO 0);
                                         -- Enable register
   SIGNAL EnShift        : STD_LOGIC;    -- Enable shift
+  SIGNAL bit_count		: STD_LOGIC_VECTOR(7 DOWNTO 0);
 
 BEGIN  -- tdm_cont_rtl
 -------------------------------------------------------------------------------
 -- Global constants
 -------------------------------------------------------------------------------
-  Tot_count  <= NoChannels & "111";
+  Tot_count  <= NoChannels & "000";
   drop_count <= DropChannels & "000";
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
@@ -209,7 +199,6 @@ BEGIN  -- tdm_cont_rtl
           IF C2 = '1' THEN
 
             IF counter >= drop_count THEN
-				  TxDisable_aux <= TxDisable;
               IF TxDisable = '1' THEN
                 DSTo  <= '1';
                 Tx_En <= '0';
@@ -268,10 +257,9 @@ BEGIN  -- tdm_cont_rtl
           ELSE
             Rx_En <= '0';
           END IF;
-
       END CASE;
-	 bit_counter <= counter;
-    ExtendFrame_delay <= ExtendFrame;
+		--wire
+		bit_count <= counter;	
     END IF;
 	 
   END PROCESS fsm;
@@ -374,6 +362,7 @@ BEGIN  -- tdm_cont_rtl
   -- outputs: 
   TxP2S               : PROCESS (CLK_I, rst_n)
     VARIABLE Tx_Count : STD_LOGIC_VECTOR(2 DOWNTO 0);  -- Tx Bit counter
+	 VARIABLE aux_txreg : STD_LOGIC_VECTOR(2 DOWNTO 0);  -- Tx Bit counter
   BEGIN  -- process TxP2S
     IF rst_n = '0' THEN                 -- asynchronous reset (active low)
       Tx_Count        := "000";
@@ -381,7 +370,7 @@ BEGIN  -- tdm_cont_rtl
       TxFlag          <= '0';
 
     ELSIF CLK_I'event AND CLK_I = '0' THEN  -- rising clock edge
-
+		--aqui
       IF TxDisable = '0' AND GetNew = '1' THEN
         Tx_reg <= Tx_reg_i;
 		  --1
@@ -392,7 +381,6 @@ BEGIN  -- tdm_cont_rtl
 
           IF Tx_count = "111" THEN
             Tx_count := "000";
-
             Tx_Reg   <= Tx_Reg_i;
             TxFlag   <= '1';
           ELSE
@@ -401,6 +389,8 @@ BEGIN  -- tdm_cont_rtl
             Tx_Reg   <= Tx_Reg(6 DOWNTO 0) & '1';
 
           END IF;
+		  --wire
+	     tx_count_wire <= Tx_count;
 
         ELSE
           TxFlag <= '0';
@@ -491,14 +481,6 @@ BEGIN  -- tdm_cont_rtl
     END IF;
 
   END PROCESS SerialEnShift;
-
-	DSTi_reg_aux <= DSTi_reg;
-	Rx_Reg_aux   <= Rx_Reg;
-	RxFlag_aux   <= RxFlag; 
-
-	TxFlag_aux <= TxFlag;
-	Tx_Reg_aux <=	Tx_reg;
-	Tx_reg_i_aux <= Tx_reg_i;
   
   END tdm_cont_rtl;
 

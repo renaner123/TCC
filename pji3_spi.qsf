@@ -102,7 +102,6 @@ set_global_assignment -name QIP_FILE DE2_115_SOPC_bridge_pll/synthesis/DE2_115_S
 set_global_assignment -name VHDL_FILE pcm_tx_tb.vhd
 set_global_assignment -name VHDL_FILE pcm_ctrl.vhd
 set_global_assignment -name VHDL_FILE frame_sync.vhd
-set_global_assignment -name VHDL_FILE "../../Users/renan/OneDrive/√?¬Årea de Trabalho/tdm-master/code/libs/components_pkg.vhd"
 set_global_assignment -name SDC_FILE nios2.sdc
 set_global_assignment -name VHDL_FILE pji3_spi.vhd
 set_global_assignment -name VHDL_FILE tdm_cont.vhd

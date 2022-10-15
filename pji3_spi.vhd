@@ -19,14 +19,8 @@ ENTITY pji3_spi IS
 		CS  		 				: OUT std_logic;   	--CSRAMAL
 		INT 		 				: IN std_logic;   	--INTCDC	
 		TDMI0		 				: IN std_logic ;		--DXA
-		TDMO0	    				: OUT std_logic;		--DRA
-		--DXA						: out std_logic
-		DSTi_reg_aux 			: OUT std_logic;
-		Rx_Reg_aux   			: OUT std_logic_vector(7 DOWNTO 0);
-		RxFlag_aux   			: OUT std_logic;
-		Tx_Reg_aux   			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		Tx_reg_i_aux 			: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		FramErr					: OUT STD_LOGIC		
+		TDMO0	    				: OUT std_logic		--DRA
+		--DXA						: out std_logic				: OUT STD_LOGIC		
 	);
 	
 END pji3_spi;
@@ -108,7 +102,6 @@ ARCHITECTURE system OF pji3_spi IS
 			  rdreq_fiforx			: OUT std_logic;									-- 1 lê o bit da fifo, 0 não lê
 			  TxValidData			: OUT std_logic;
 			  frame_num 			: in std_logic_vector(4 downto 0);
-			  TxFlag_aux			: in std_logic;
 			  RxValidData			: in std_logic;
 			  wrreq_fiforx			: OUT std_logic;									-- 1 escreve na fifo, 0 não escreve
 			  rdempty_fixorx		: IN std_logic;									-- 0 tem dados na fifo
@@ -117,13 +110,13 @@ ARCHITECTURE system OF pji3_spi IS
 			  rdreq_fifotx			: OUT std_logic;									-- 1 lê o bit da fifo, 0 não lê
 			  wrreq_fifotx			: OUT std_logic;									-- 1 escreve na fifo, 0 não escreve
 			  rdempty_fixotx		: IN std_logic;									-- 0 tem dados na fifo
+	        tx_count_wire  		: IN STD_LOGIC_VECTOR(2 DOWNTO 0);	
+		     tx_write				: OUT STD_LOGIC;		  
 			  wrfull_fifotx		: IN std_logic 									-- 1 fifo está cheia
 		 );
 	END component fifo_controller;	
 	
-	
-	
-	
+		
 	component tdm_cont_ent IS
 		PORT (
 		 rst_n  : IN  std_logic;             					-- System asynchronous reset
@@ -162,18 +155,10 @@ ARCHITECTURE system OF pji3_spi IS
 		 Rx_en0 			: OUT std_logic;             					-- Rx enable channel 0
 		 Rx_en1 			: OUT std_logic;             					-- Rx enable channel 1
 		 Rx_en2 			: OUT std_logic;             					-- Rx enable channel 2
-		 SerDo 			: OUT std_logic;              					-- serial Data out
-		 SerDi 			: IN  std_logic;               					-- Serial Data in
-		 -- Debug
-		DSTi_reg_aux 	: OUT std_logic;
-		Rx_Reg_aux   	: OUT std_logic_vector(7 DOWNTO 0);
-	   RxFlag_aux   	: OUT std_logic; 	
-		TxFlag_aux   	: OUT STD_LOGIC;
-		Tx_Reg_aux   	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		Tx_reg_i_aux 	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-		TxDisable_aux  : OUT std_logic;
-		ExtendFrame_delay : OUT STD_LOGIC;
-	   bit_counter : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+		 SerDo 			: OUT std_logic;              				-- serial Data out
+		 SerDi 			: IN  std_logic;              					-- Serial Data in
+		 tx_count_wire  : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+
 		 ); 
 	 end component tdm_cont_ent;
 
@@ -214,13 +199,11 @@ ARCHITECTURE system OF pji3_spi IS
 	SIGNAL fifoTx_wrfull_wire  : std_logic;	
 	SIGNAL fifoTx_rdreq_control: std_logic;
 	SIGNAL fifoTx_wrreq_control : std_logic;
-	SIGNAL TxFlag_aux : std_logic;
 	
 	SIGNAL TxValidData : std_logic;
 	SIGNAL RxValidData : std_logic;
-   SIGNAL TxDisable_aux : STD_LOGIC;
-	SIGNAL ExtendFrame_delay : std_logic;
-	SIGNAL bit_counter : STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL tx_count_wire  : STD_LOGIC_VECTOR(2 DOWNTO 0);
+	SIGNAL tx_write : std_logic;
 	
 BEGIN 
 	 
@@ -268,7 +251,6 @@ BEGIN
 		  rdreq_fiforx		=>	fifoRx_rdreq_control,
 		  wrreq_fiforx		=>	fifoRx_wrreq_control,	
 		  TxValidData		=> TxValidData,
-		  TxFlag_aux		=> TxFlag_aux,
 		  frame_num 		=> frame_num,
 		  RxValidData	   => RxValidData, 
 		  rdempty_fixorx	=>	fifoRx_rdempty_wire,
@@ -277,6 +259,8 @@ BEGIN
 		  rdreq_fifotx		=>	fifoTx_rdreq_control,	
 		  wrreq_fifotx		=>	fifoTx_wrreq_control,	
 		  rdempty_fixotx	=>	fifoTx_rdempty_wire,
+		  tx_write		   => tx_write,
+		  tx_count_wire   => tx_count_wire,
 		  wrfull_fifotx	=>	fifoTx_wrfull_wire	
 		 );
 
@@ -332,7 +316,7 @@ BEGIN
 		
 		-- Backend
 	   RxValidData    => RxValidData ,							-- out valid data strobe 	-> 1
-	   FramErr        => FramErr,  								-- out wb 						   -> 0		
+	   --FramErr        => FramErr,  								-- out wb 						   -> 0		
 	
 		-- Backend
 		RxRead         => frame_end,    							-- in   - read byte, fsm rx_Buffer{idle:0, read:0, write:RxRdy, waitwrite:1}		
@@ -346,15 +330,8 @@ BEGIN
 		EnableSerialIF => '0',								   	--  (EnableSerialIF = '1') THEN DSTo <= SerDi; ELSE DSTo <= Tx_reg(7);
 		SerDi => SerDi_wire,              						-- Serial Data in
 		SerDo => SerDo_wire,
-		DSTi_reg_aux => DSTi_reg_aux,
-		Rx_Reg_aux   => Rx_Reg_aux,
-		RxFlag_aux   => RxFlag_aux	,	
-		TxFlag_aux   => TxFlag_aux,   
-		Tx_Reg_aux   => Tx_Reg_aux,
-		Tx_reg_i_aux => Tx_reg_i_aux,
-		TxDisable_aux => TxDisable_aux,
-		ExtendFrame_delay => ExtendFrame_delay,
-		bit_counter => bit_counter
+		tx_count_wire => tx_count_wire
+
 	);	
 		
 	reset <= '0' when TX_en = '1' else '1';
@@ -362,6 +339,7 @@ BEGIN
 	DIO <= MOSI_m when TX_en = '1' else 'Z';
 	MISO_m <= DIO when TX_en = '0' else 'Z';
 	
+		
 	DCLK <= SCLK;
 	CS   <= SS_n;
 	C2_SYS <= CLOCK_2M;

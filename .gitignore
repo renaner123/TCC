@@ -55,6 +55,7 @@
 !*.sof
 !*.sopcinfo
 !*.sdc
+!*.qsys
 ## tbd
 
 !*.tcl

@@ -11,7 +11,6 @@ ENTITY fifo_controller IS
         rdreq_fiforx			: OUT STD_LOGIC;									-- 1 lê o bit da fifo, 0 não lê
         wrreq_fiforx			: OUT STD_LOGIC;									-- 1 escreve na fifo, 0 não escreve
 		  TxValidData			: OUT STD_LOGIC;
-		  TxFlag_aux			: IN STD_LOGIC;
 		  RxValidData        : in std_logic;
 		  frame_num 			: in std_logic_vector(4 downto 0);
         rdempty_fixorx		: IN STD_LOGIC;									-- 0 tem dados na fifo
@@ -20,29 +19,32 @@ ENTITY fifo_controller IS
         rdreq_fifotx			: OUT STD_LOGIC;									-- 1 lê o bit da fifo, 0 não lê
         wrreq_fifotx			: OUT STD_LOGIC;									-- 1 escreve na fifo, 0 não escreve
         rdempty_fixotx		: IN STD_LOGIC;									-- 0 tem dados na fifo
-        wrfull_fifotx		: IN STD_LOGIC 									    -- 1 fifo está cheia
+	     tx_count_wire  		: IN STD_LOGIC_VECTOR(2 DOWNTO 0);		
+	     tx_write				: OUT STD_LOGIC;	  
+        wrfull_fifotx		: IN STD_LOGIC									    -- 1 fifo está cheia
     );
 END;
 
 -- Descrição de como o circuito deve funcionar
 ARCHITECTURE fifo_controller OF fifo_controller IS
-    TYPE States_type IS (IDLE_st, WRITE_st);   --States type
-    SIGNAL state : States_type;                         -- FSM state
+    --TYPE States_type IS (IDLE_st, WRITE_st);   --States type
+    --SIGNAL state : States_type;                         -- FSM state
 
 BEGIN
 
-process (pclk, reset, FS, TxFlag_aux) is
+process (pclk, reset, FS) is
 variable count : integer range 0 to 3;
 
 begin
     if (reset = '0') then
-        state        <= IDLE_st;
+        --state        <= IDLE_st;
         rdreq_fifotx <= '0' ;
         wrreq_fifotx <= '0' ;
         rdreq_fiforx <= '0' ;
         wrreq_fiforx <= '0' ;   
 		  TxValidData 	<= '0' ;
 		  count 			:=  0 ;
+		  tx_write 		<= '0';
     elsif (pclk'event and pclk = '1') then 	 
  
 		if(FS = '1') then
@@ -64,11 +66,23 @@ begin
 		end if;
 		
 
-		if(FS = '1' and count > 1) then
-		   rdreq_fifotx <= '1';
-			TxValidData <= '1';		
-		end if;				
-						
+--		if(FS = '1' and count > 1) then
+--			TxValidData <= '1';		
+--		end if;			
+
+		if(frame_num = "11110") then
+			TxValidData <= '1';	
+			rdreq_fifotx <= '1';			
+		end if;		
+	
+--		if(tx_count_wire = "111") then
+--			tx_write <= '1';
+--		end if;
+		
+--		if(frame_num = "11110") then
+--			rdreq_fifotx <= '1';		
+--		end if;
+		
 --		if(wrfull_fifotx = '1') then
 --		  rdreq_fifotx <= '1';
 --		end if;
