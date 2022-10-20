@@ -373,7 +373,7 @@ BEGIN  -- tdm_cont_rtl
       IF TxDisable = '0' AND GetNew = '1' THEN
         Tx_reg <= Tx_reg_i;
 		  --1
-        TxFlag <= '0';
+        TxFlag <= '1';
 
       ELSE
         IF Tx_En = '1' THEN

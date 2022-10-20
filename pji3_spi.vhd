@@ -110,6 +110,8 @@ ARCHITECTURE system OF pji3_spi IS
 			  rdreq_fifotx			: OUT std_logic;									-- 1 lê o bit da fifo, 0 não lê
 			  wrreq_fifotx			: OUT std_logic;									-- 1 escreve na fifo, 0 não escreve
 			  rdempty_fixotx		: IN std_logic;									-- 0 tem dados na fifo
+			  txd_wire 				: in std_logic_vector(7 downto 0);
+			  txd_invert 		   : out std_logic_vector(7 downto 0);
 		     tx_write				: OUT STD_LOGIC;		  
 			  wrfull_fifotx		: IN std_logic 									-- 1 fifo está cheia
 		 );
@@ -192,6 +194,7 @@ ARCHITECTURE system OF pji3_spi IS
 	SIGNAL fifoRx_rdreq_control: std_logic;
 	SIGNAL fifoRx_wrreq_control : std_logic;
 	SIGNAL fifoRx_out_wire		 : std_logic_vector (7 DOWNTO 0);
+	SIGNAL txd_invert		 		: std_logic_vector (7 DOWNTO 0);
 	-- sinais fixo tx	
 	SIGNAL fifoTx_rdempty_wire : std_logic;	
 	SIGNAL fifoTx_wrfull_wire  : std_logic;	
@@ -229,7 +232,7 @@ BEGIN
 		);
 	
 	fifo_catalog_tx : component fifotx port map (
-			data		=> fifoRx_out_wire,
+			data		=> txd_invert,
 			rdclk		=> CLOCK_2M,
 			rdreq		=> fifoTx_rdreq_control,
 			wrclk		=> CLOCK_2M ,
@@ -238,6 +241,9 @@ BEGIN
 			rdempty	=>	fifoTx_rdempty_wire,
 			wrfull	=> fifoTx_wrfull_wire
 		);	
+		
+		
+		
 	
 	fifo_controller_top : component fifo_controller 
 		port map (
@@ -257,6 +263,8 @@ BEGIN
 		  wrreq_fifotx		=>	fifoTx_wrreq_control,	
 		  rdempty_fixotx	=>	fifoTx_rdempty_wire,
 		  tx_write		   => tx_write,
+		  txd_wire		   => fifoRx_out_wire,
+		  txd_invert		=> txd_invert,
 		  wrfull_fifotx	=>	fifoTx_wrfull_wire	
 		 );
 
