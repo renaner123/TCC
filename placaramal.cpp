@@ -177,6 +177,117 @@ Placaramal::Placaramal() {
         alt_avalon_spi_command(SPI_MASTER_BASE, 0, 2, coefficient_b2, 0, &this->rx_buf[1], 0);
     }
 
+    void Placaramal::set_all_coefficients() {
+		this->coefficient_filter_gr_channel1[0] = 0xa2;
+		this->coefficient_filter_gr_channel1[1] = 0xa0;
+
+		this->coefficient_filter_gx_channel1[0]  = 0x88;
+		this->coefficient_filter_gx_channel1[0]  = 0x78;
+
+ 		this->coefficient_filter_r_channel1[0]  = 0x3a;
+        this->coefficient_filter_r_channel1[1]  = 0xc0;
+        this->coefficient_filter_r_channel1[2]  = 0x2b;
+        this->coefficient_filter_r_channel1[3]  = 0x70;
+        this->coefficient_filter_r_channel1[4]  = 0x23;
+        this->coefficient_filter_r_channel1[5]  = 0xbe;
+        this->coefficient_filter_r_channel1[6]  = 0x2d;
+        this->coefficient_filter_r_channel1[7]  = 0x36;
+        this->coefficient_filter_r_channel1[8]  = 0xab;
+        this->coefficient_filter_r_channel1[9]  = 0xad;
+        this->coefficient_filter_r_channel1[10]  = 0xab;
+        this->coefficient_filter_r_channel1[11]  = 0xb6;
+        this->coefficient_filter_r_channel1[12]  = 0x5c;
+        this->coefficient_filter_r_channel1[13]  = 0xbf;  
+        
+        this->coefficient_filter_z_channel1[0]  = 0xaa;
+        this->coefficient_filter_z_channel1[1]  = 0xa2;  
+        this->coefficient_filter_z_channel1[2]  = 0xa3;  
+        this->coefficient_filter_z_channel1[3]  = 0x4c;  
+        this->coefficient_filter_z_channel1[4]  = 0xba;  
+        this->coefficient_filter_z_channel1[5]  = 0xab;  
+        this->coefficient_filter_z_channel1[6]  = 0xc3;  
+        this->coefficient_filter_z_channel1[7]  = 0xae;  
+        this->coefficient_filter_z_channel1[8]  = 0xab;  
+        this->coefficient_filter_z_channel1[9]  = 0xa4;  
+        this->coefficient_filter_z_channel1[10]  = 0x34;  
+        this->coefficient_filter_z_channel1[11]  = 0xd1;  
+        this->coefficient_filter_z_channel1[12]  = 0x66;  
+        this->coefficient_filter_z_channel1[13]  = 0x9f;   
+
+        this->coefficient_filter_b1_channel1[0]  = 0x22;   
+        this->coefficient_filter_b1_channel1[1]  = 0x73;  
+        this->coefficient_filter_b1_channel1[2]  = 0x34;
+        this->coefficient_filter_b1_channel1[3]  = 0x2a;
+        this->coefficient_filter_b1_channel1[4]  = 0x32;
+        this->coefficient_filter_b1_channel1[5]  = 0xa5;
+        this->coefficient_filter_b1_channel1[6]  = 0xd8;
+        this->coefficient_filter_b1_channel1[7]  = 0xfe;
+        this->coefficient_filter_b1_channel1[8]  = 0x87;
+        this->coefficient_filter_b1_channel1[9]  = 0xd8;
+        this->coefficient_filter_b1_channel1[10]  = 0x7f;
+        this->coefficient_filter_b1_channel1[11]  = 0x87;
+        this->coefficient_filter_b1_channel1[12]  = 0xa8;
+        this->coefficient_filter_b1_channel1[13]  = 0xf0; 
+  
+		this->coefficient_filter_b2_channel1[0]  = 0x2e;
+		this->coefficient_filter_b2_channel1[0]  = 0x01;
+
+        //canal 2
+		this->coefficient_filter_gr_channel2[0] = 0xaa;
+		this->coefficient_filter_gr_channel2[1] = 0xa2;
+
+		this->coefficient_filter_gx_channel2[0]  = 0x88;
+		this->coefficient_filter_gx_channel2[0]  = 0x78;
+
+ 		this->coefficient_filter_r_channel2[0]  = 0x3a;
+        this->coefficient_filter_r_channel2[1]  = 0xc0;
+        this->coefficient_filter_r_channel2[2]  = 0xbb;
+        this->coefficient_filter_r_channel2[3]  = 0xf0;
+        this->coefficient_filter_r_channel2[4]  = 0xa2;
+        this->coefficient_filter_r_channel2[5]  = 0x36;
+        this->coefficient_filter_r_channel2[6]  = 0xaa;
+        this->coefficient_filter_r_channel2[7]  = 0xcf;
+        this->coefficient_filter_r_channel2[8]  = 0x2c;
+        this->coefficient_filter_r_channel2[9]  = 0xad;
+        this->coefficient_filter_r_channel2[10]  = 0xaa;
+        this->coefficient_filter_r_channel2[11]  = 0xa5;
+        this->coefficient_filter_r_channel2[12]  = 0xba;
+        this->coefficient_filter_r_channel2[13]  = 0xae;  
+        
+        this->coefficient_filter_z_channel2[0]  = 0x24;
+        this->coefficient_filter_z_channel2[1]  = 0xcc;  
+        this->coefficient_filter_z_channel2[2]  = 0xb5;  
+        this->coefficient_filter_z_channel2[3]  = 0x56;  
+        this->coefficient_filter_z_channel2[4]  = 0xc3;  
+        this->coefficient_filter_z_channel2[5]  = 0xa4;  
+        this->coefficient_filter_z_channel2[6]  = 0x4b;  
+        this->coefficient_filter_z_channel2[7]  = 0x26;  
+        this->coefficient_filter_z_channel2[8]  = 0xfb;  
+        this->coefficient_filter_z_channel2[9]  = 0xac;  
+        this->coefficient_filter_z_channel2[10]  = 0x98;  
+        this->coefficient_filter_z_channel2[11]  = 0x12;  
+        this->coefficient_filter_z_channel2[12]  = 0x76;  
+        this->coefficient_filter_z_channel2[13]  = 0x9f;   
+
+        this->coefficient_filter_b1_channel2[0]  = 0xaa;   
+        this->coefficient_filter_b1_channel2[1]  = 0x74;  
+        this->coefficient_filter_b1_channel2[2]  = 0x25;
+        this->coefficient_filter_b1_channel2[3]  = 0x3a;
+        this->coefficient_filter_b1_channel2[4]  = 0x42;
+        this->coefficient_filter_b1_channel2[5]  = 0x27;
+        this->coefficient_filter_b1_channel2[6]  = 0xa8;
+        this->coefficient_filter_b1_channel2[7]  = 0x7a;
+        this->coefficient_filter_b1_channel2[8]  = 0x87;
+        this->coefficient_filter_b1_channel2[9]  = 0x29;
+        this->coefficient_filter_b1_channel2[10]  = 0x7a;
+        this->coefficient_filter_b1_channel2[11]  = 0x87;
+        this->coefficient_filter_b1_channel2[12]  = 0xa8;
+        this->coefficient_filter_b1_channel2[13]  = 0x70; 
+  
+		this->coefficient_filter_b2_channel2[0]  = 0x2e;
+		this->coefficient_filter_b2_channel2[0]  = 0x01;
+    }
+
     bool Placaramal::is_cfail(alt_u8 analisar_byte){
        
         //printf("%02x\n",analisar_byte);

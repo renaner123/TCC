@@ -102,6 +102,8 @@ class Placaramal{
 		void filter_coefficients_b1(alt_u8 coefficient_b1[14]);
 		void filter_coefficients_b2(alt_u8 coefficient_b2[2]);
 
+		void set_all_coefficients();
+
 		void channel_ring();
 
 		void hardware_reset();
@@ -118,19 +120,21 @@ class Placaramal{
 		// atributos da classe: cada objeto desta classe
 		alt_u8 tx_buf[8];
 		alt_u8 rx_buf[8];
-		alt_u8 coefficient_filter_gr_channel1[2]  = {0xa2, 0xa0};
-		alt_u8 coefficient_filter_gx_channel1[2]  = {0x88, 0x78};
-		alt_u8 coefficient_filter_r_channel1[14]  = {0x3a, 0xc0, 0x2b, 0x70, 0x23, 0xbe, 0x2d, 0x36, 0xab, 0xad, 0xab, 0xb6, 0x5c, 0xbf};
-        alt_u8 coefficient_filter_z_channel1[15]  = {0xaa, 0xa2, 0xa3, 0x4c, 0xba, 0xab, 0xc3, 0xae, 0xab, 0xa4, 0x34, 0xd1, 0x66, 0x9f, 0x01};
-        alt_u8 coefficient_filter_b1_channel1[14] = {0x22, 0x73, 0x34, 0x2a, 0x32, 0xa5, 0xd8, 0xfe, 0x87, 0xd8, 0x7f, 0x87, 0xa8, 0xf0};
-        alt_u8 coefficient_filter_b2_channel1[2]  = {0x2e, 0x01};  
+		alt_u8 coefficient_filter_gr_channel1[2] ;
+		alt_u8 coefficient_filter_gx_channel1[2] ;
+		// compilador não deixou inicializar dessa forma...
+		//alt_u8 coefficient_filter_r_channel1[14]  = {0x3a, 0xc0, 0x2b, 0x70, 0x23, 0xbe, 0x2d, 0x36, 0xab, 0xad, 0xab, 0xb6, 0x5c, 0xbf};
+		alt_u8 coefficient_filter_r_channel1[14] ;
+        alt_u8 coefficient_filter_z_channel1[15] ;
+        alt_u8 coefficient_filter_b1_channel1[14] ;
+        alt_u8 coefficient_filter_b2_channel1[2]  ;  
 
-		alt_u8 coefficient_filter_gr_channel2[2]  = {0xAA, 0xA2};
-		alt_u8 coefficient_filter_gx_channel2[2]  = {0x88, 0x78};
-		alt_u8 coefficient_filter_r_channel2[14]  = {0x3A, 0xC0, 0xBB, 0xF0, 0xA2, 0x36, 0xAA, 0xCF, 0x2C, 0xAD, 0xAA, 0xA5, 0xBA, 0xAE};
-        alt_u8 coefficient_filter_z_channel2[15]  = {0x24, 0xCC, 0xB5, 0x56, 0xC3, 0xA4, 0x4B, 0x26, 0xFB, 0xAC, 0x98, 0x12, 0x76, 0x9F, 0x01};
-        alt_u8 coefficient_filter_b1_channel2[14] = {0xAA, 0x74, 0x25, 0x3A, 0x42, 0x27, 0xA8, 0x7A, 0x87, 0x29, 0x7A, 0x87, 0xA8, 0x70};
-        alt_u8 coefficient_filter_b2_channel2[2]  = {0x2e, 0x01};  		
+		alt_u8 coefficient_filter_gr_channel2[2] ;
+		alt_u8 coefficient_filter_gx_channel2[2] ;
+		alt_u8 coefficient_filter_r_channel2[14] ;
+        alt_u8 coefficient_filter_z_channel2[15] ;
+        alt_u8 coefficient_filter_b1_channel2[14];
+        alt_u8 coefficient_filter_b2_channel2[2] ;  		
 };
 
 
