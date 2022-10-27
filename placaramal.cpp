@@ -4,99 +4,102 @@ Placaramal::Placaramal() {
 
 }
     void Placaramal::init(){
+
+        this->channel_enable(CHANNEL_1);                                        //4A 0x01
+        this->set_slic_direction(0x20);                                         //54 0x20
+        this->channel_enable(CHANNEL_1);                                        //4A 0x01
+        this->write_codec(WRITE_IO_REGISTER,0x02);                              //52 0x02
+        this->write_codec(HARDWARE_RESET);                                      //04
+        usleep(4000000);
+        this->set_master_clock(MASTER_CLOCK);                                   //46  0x92
+        this->set_debounce_time(DEBOUNCE_TIME);                                 //C8  0x3C
+        this->channel_enable(CHANNEL_1);                                        //4A  0x01
+        this->set_time_slot(TIME_SLOT);                                         //44  0x40 
+        
+        printf("Valor recebido do codec: %02x: \n",this->read_codec(READ_SLIC_DIRECTION_STATUS_BITS));        
+
         this->init_channel1();
         this->init_channel2(); 
 
         this->set_interrupt_mask(0xFE);
         this->set_interrupt_mask(0xFA);
         this->set_interrupt_mask(0xEA);
-        this->set_interrupt_mask();
+        this->set_interrupt_mask(INTERRUPT_MASK);
 
         printf("Valor recebido do codec: %02x: \n",this->read_codec(READ_SLIC_DIRECTION_STATUS_BITS));
     }
 
     void Placaramal::init_channel1(){ 
 
-        this->channel_enable(CHANNEL_1);
-        this->set_slic_direction(0x20);
-        this->channel_enable(CHANNEL_1);
-        this->write_codec(WRITE_IO_REGISTER,0x20);
-    	this->write_codec(HARDWARE_RESET);
-    	//usleep(4000000);
-        this->set_master_clock();
-        this->set_debounce_time();
-        this->channel_enable(CHANNEL_1);
-        this->set_time_slot();  
-        printf("Valor recebido do codec: %02x: \n",this->read_codec(READ_SLIC_DIRECTION_STATUS_BITS));
-        this->channel_enable(CHANNEL_1);
-        this->read_codec(READ_IO_REGISTER);
-        this->write_codec(WRITE_IO_REGISTER,0x06);
-        this->channel_enable(CHANNEL_1);
-        this->read_codec(READ_IO_REGISTER);
-        this->channel_enable(CHANNEL_1);      
-        this->write_codec(WRITE_IO_REGISTER,0x02);
-        this->set_slic_direction(0x02);
-        this->read_codec(0x6D);
-        this->set_interrupt_mask();
-        this->set_coefficients(DEFAULT_COEFFICIENT);
-        this->channel_enable(CHANNEL_1);       
-        this->read_codec(READ_IO_REGISTER);      
-        this->channel_enable(CHANNEL_1);    
-        this->write_codec(AISN_ANALOG_GAINS,0x80);
-        this->filter_coefficients_gr(this->coefficient_filter_gr_channel1);
-        this->filter_coefficients_gx(this->coefficient_filter_gx_channel1);
-        this->set_coefficients(0x60);
-        this->set_coefficients(0x30); 
-        this->channel_enable(CHANNEL_1);
-        this->filter_coefficients_r(this->coefficient_filter_r_channel1);
-        this->filter_coefficients_z(this->coefficient_filter_z_channel1);
-        this->filter_coefficients_b1(this->coefficient_filter_b1_channel1);
-        this->filter_coefficients_b2(this->coefficient_filter_b2_channel1);        
-        this->set_coefficients(0x37);
-        this->set_coefficients(0x30);
+        this->channel_enable(CHANNEL_1);                                        //4A  0x01
+        this->read_codec(READ_IO_REGISTER);                                     //53
+        this->write_codec(WRITE_IO_REGISTER,0x06);                              //52  0x06
+        this->channel_enable(CHANNEL_1);                                        //4A  0x01
+        this->read_codec(READ_IO_REGISTER);                                     //53
+        this->channel_enable(CHANNEL_1);                                        //4A  0x01     
+        this->write_codec(WRITE_IO_REGISTER,0x02);                              //52  0x02
+        this->set_slic_direction(0x02);                                         //54  0x02
+        this->read_codec(0x6D);                                                 //6D
+        this->set_interrupt_mask(INTERRUPT_MASK);                               //6C  0xAA
+        this->set_coefficients(DEFAULT_COEFFICIENT);                            //60  0x00
+        this->channel_enable(CHANNEL_1);                                        //4A  0x01 
+        this->read_codec(READ_IO_REGISTER);                                     //53     
+        this->channel_enable(CHANNEL_1);                                        //4A  0x01
+        this->write_codec(AISN_ANALOG_GAINS,0x80);                              //50  0x80
+        this->filter_coefficients_gr(this->coefficient_filter_gr_channel1);     //82
+        this->filter_coefficients_gx(this->coefficient_filter_gx_channel1);     //80
+        this->set_coefficients(0x60);                                           //60 0x60
+        this->set_coefficients(0x30);                                           //60 0x30
+        this->channel_enable(CHANNEL_1);                                        //4A 0x01
+        this->filter_coefficients_r(this->coefficient_filter_r_channel1);       //8A 
+        this->filter_coefficients_z(this->coefficient_filter_z_channel1);       //84
+        this->filter_coefficients_b1(this->coefficient_filter_b1_channel1);     //86
+        this->filter_coefficients_b2(this->coefficient_filter_b2_channel1);     //96
+        this->set_coefficients(0x37);                                           //60 0x37
+        this->set_coefficients(0x30);                                           //60 0x37
     }
 
      void Placaramal::init_channel2(){ 
 
-        this->channel_enable(CHANNEL_2);
-        this->read_codec(0x53);
-        this->set_slic_direction(0x1E);
-        this->channel_enable(CHANNEL_2);
-        this->read_codec(0x53);
-        this->channel_enable(CHANNEL_2);
-        this->write_codec(WRITE_IO_REGISTER,0x02);
-        this->set_slic_direction(0x02);
-        this->condicao_operacao();
-        this->read_codec(0x6D);
-        this->set_interrupt_mask();
-        this->set_coefficients(DEFAULT_COEFFICIENT);
-        this->channel_enable(CHANNEL_2);
-        this->read_codec(0x53);
-        this->channel_enable(CHANNEL_2);
-        this->write_codec(AISN_ANALOG_GAINS,0x80);
-        this->filter_coefficients_gr(this->coefficient_filter_gr_channel2);
-        this->filter_coefficients_gx(this->coefficient_filter_gx_channel2);
-        this->set_coefficients(0x30);
-        this->set_coefficients(0x30);
-        this->channel_enable(CHANNEL_2); 
-        this->filter_coefficients_r(this->coefficient_filter_r_channel2);
-        this->filter_coefficients_z(this->coefficient_filter_z_channel2);
-        this->filter_coefficients_b1(this->coefficient_filter_b1_channel2);
-        this->filter_coefficients_b2(this->coefficient_filter_b2_channel2);
-        this->set_coefficients(0x37);
-        this->set_coefficients(0x30);  
+        this->channel_enable(CHANNEL_2);                                        //4A 0x02
+        this->read_codec(0x53);                                                 //53
+        this->set_slic_direction(0x1E);                                         //54 0x1E
+        this->channel_enable(CHANNEL_2);                                        //4A 0x02
+        this->read_codec(0x53);                                                 //53
+        this->channel_enable(CHANNEL_2);                                        //4A 0x02
+        this->write_codec(WRITE_IO_REGISTER,0x02);                              //52 0x02
+        this->set_slic_direction(0x02);                                         //54 0x1E
+        this->condicao_operacao();                                              //70 0x00
+        this->read_codec(0x6D);                                                 //6D
+        this->set_interrupt_mask(INTERRUPT_MASK);                               //6C 0xAA                                         
+        this->set_coefficients(DEFAULT_COEFFICIENT);                            //60 0x00
+        this->channel_enable(CHANNEL_2);                                        //4A 0x02
+        this->read_codec(0x53);                                                 //53
+        this->channel_enable(CHANNEL_2);                                        //4A 0x02
+        this->write_codec(AISN_ANALOG_GAINS,0x80);                              //50 0x80
+        this->filter_coefficients_gr(this->coefficient_filter_gr_channel2);     //82
+        this->filter_coefficients_gx(this->coefficient_filter_gx_channel2);     //80
+        this->set_coefficients(0x30);                                           //60 0x30
+        this->set_coefficients(0x30);                                           //60 0x30
+        this->channel_enable(CHANNEL_2);                                        //4A 0x30
+        this->filter_coefficients_r(this->coefficient_filter_r_channel2);       //8A
+        this->filter_coefficients_z(this->coefficient_filter_z_channel2);       //84
+        this->filter_coefficients_b1(this->coefficient_filter_b1_channel2);     //86
+        this->filter_coefficients_b2(this->coefficient_filter_b2_channel2);     //96
+        this->set_coefficients(0x37);                                           //60 0x37
+        this->set_coefficients(0x30);                                           //60 0x30
     }   
 
-    void Placaramal::set_master_clock(){
-        this->write_codec(WRITE_CHIP_CONFIGURATION_REGISTER,MASTER_CLOCK);
+    void Placaramal::set_master_clock(alt_u8 clock){
+        this->write_codec(WRITE_CHIP_CONFIGURATION_REGISTER, clock);
     }
 
-    void Placaramal::set_debounce_time(){
-        this->write_codec(WRITE_DEBOUNCE_TIME_REGISTER,DEBOUNCE_TIME);
+    void Placaramal::set_debounce_time(alt_u8 debounce){
+        this->write_codec(WRITE_DEBOUNCE_TIME_REGISTER, debounce);
     }
 
-    void Placaramal::set_time_slot(){
-        this->write_codec(WRITE_SET_TIMESLOT,TIME_SLOT);
+    void Placaramal::set_time_slot(alt_u8 time_slot){
+        this->write_codec(WRITE_SET_TIMESLOT,time_slot);
     }
 
     void Placaramal::set_time_real_data(){
@@ -120,7 +123,7 @@ Placaramal::Placaramal() {
         this->write_codec(ACTIVATE_CODEC);
     }
 
-    void Placaramal::set_interrupt_mask(alt_u8 mask = 0xAA){
+    void Placaramal::set_interrupt_mask(alt_u8 mask){
         this->write_codec(WRITE_INTERRUPT_MASK_REGISTER, mask);
     }
 
@@ -177,14 +180,23 @@ Placaramal::Placaramal() {
         alt_avalon_spi_command(SPI_MASTER_BASE, 0, 2, coefficient_b2, 0, &this->rx_buf[1], 0);
     }
 
+    void Placaramal::transmit_time_slot(alt_u8 timeslot){
+        this->write_codec(TRANSMIT_TIME_SLOT, timeslot);
+    }
+
+    void Placaramal::receive_time_slot(alt_u8 timeslot){
+        this->write_codec(RECEIVE_TIME_SLOT, timeslot);
+    }
+
     void Placaramal::set_all_coefficients() {
-		this->coefficient_filter_gr_channel1[0] = 0xa2;
-		this->coefficient_filter_gr_channel1[1] = 0xa0;
+        //Eclipse nios não aceitou atribuir o vetor inteiro .. {0x20, 0x21...}
+        this->coefficient_filter_gr_channel1[0] = 0xa2;
+        this->coefficient_filter_gr_channel1[1] = 0xa0;
 
-		this->coefficient_filter_gx_channel1[0]  = 0x88;
-		this->coefficient_filter_gx_channel1[0]  = 0x78;
+        this->coefficient_filter_gx_channel1[0]  = 0x88;
+        this->coefficient_filter_gx_channel1[0]  = 0x78;
 
- 		this->coefficient_filter_r_channel1[0]  = 0x3a;
+         this->coefficient_filter_r_channel1[0]  = 0x3a;
         this->coefficient_filter_r_channel1[1]  = 0xc0;
         this->coefficient_filter_r_channel1[2]  = 0x2b;
         this->coefficient_filter_r_channel1[3]  = 0x70;
@@ -229,17 +241,17 @@ Placaramal::Placaramal() {
         this->coefficient_filter_b1_channel1[12]  = 0xa8;
         this->coefficient_filter_b1_channel1[13]  = 0xf0; 
   
-		this->coefficient_filter_b2_channel1[0]  = 0x2e;
-		this->coefficient_filter_b2_channel1[0]  = 0x01;
+        this->coefficient_filter_b2_channel1[0]  = 0x2e;
+        this->coefficient_filter_b2_channel1[0]  = 0x01;
 
         //canal 2
-		this->coefficient_filter_gr_channel2[0] = 0xaa;
-		this->coefficient_filter_gr_channel2[1] = 0xa2;
+        this->coefficient_filter_gr_channel2[0] = 0xaa;
+        this->coefficient_filter_gr_channel2[1] = 0xa2;
 
-		this->coefficient_filter_gx_channel2[0]  = 0x88;
-		this->coefficient_filter_gx_channel2[0]  = 0x78;
+        this->coefficient_filter_gx_channel2[0]  = 0x88;
+        this->coefficient_filter_gx_channel2[0]  = 0x78;
 
- 		this->coefficient_filter_r_channel2[0]  = 0x3a;
+         this->coefficient_filter_r_channel2[0]  = 0x3a;
         this->coefficient_filter_r_channel2[1]  = 0xc0;
         this->coefficient_filter_r_channel2[2]  = 0xbb;
         this->coefficient_filter_r_channel2[3]  = 0xf0;
@@ -284,8 +296,8 @@ Placaramal::Placaramal() {
         this->coefficient_filter_b1_channel2[12]  = 0xa8;
         this->coefficient_filter_b1_channel2[13]  = 0x70; 
   
-		this->coefficient_filter_b2_channel2[0]  = 0x2e;
-		this->coefficient_filter_b2_channel2[0]  = 0x01;
+        this->coefficient_filter_b2_channel2[0]  = 0x2e;
+        this->coefficient_filter_b2_channel2[0]  = 0x01;
     }
 
     bool Placaramal::is_cfail(alt_u8 analisar_byte){
@@ -297,14 +309,36 @@ Placaramal::Placaramal() {
     void Placaramal::channel_ring(){
     //por enquanto está estático canal 1 
     int count = 0;   
+        this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_1);
+        this->write_codec(AISN_ANALOG_GAINS,0x00);   
+        this->set_coefficients(0x3F);
+        this->set_coefficients(0x3F);       
+        this->write_codec(AISN_ANALOG_GAINS,0x00);    
+        this->activate_codec();
+        this->transmit_time_slot(0x1F);
+        this->receive_time_slot(0x1F);
+
+        this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_2);    
+        this->write_codec(AISN_ANALOG_GAINS,0x80);   
+        this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_2); 
+        this->activate_codec();
+        this->transmit_time_slot(0x1E);
+        this->receive_time_slot(0x1E);           
+
+
         while (count<2) {
-            this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_1);            
+            this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_1);
             this->write_codec(WRITE_IO_REGISTER,RING_CHANNEL);
             usleep(1000000);
             this->write_codec(WRITE_IO_REGISTER,STOP_RING_CHANNEL);
             usleep(4000000);
             count ++;
-        }      
+        }
+
+        this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_2);   
+        this->write_codec(AISN_ANALOG_GAINS,0x00);   
+        this->set_coefficients(0x3F);
+        this->write_codec(WRITE_IO_REGISTER,0x1F);
     }
 
     alt_u8 Placaramal::read_codec(alt_u8 comando_codec){

@@ -33,9 +33,11 @@
 #define Z_FILTER_COEFFICIENTS 0x84
 #define B1_FILTER_COEFFICIENTS 0x86
 #define B2_FILTER_COEFFICIENTS 0x96
+#define TRANSMIT_TIME_SLOT 0x40
+#define RECEIVE_TIME_SLOT 0x42
 
 
-//VALORES USADOS NAS CONFIGURACOES
+//Valores padrões usados nas
 #define MASTER_CLOCK 0X92     // 2.048 Mhz - PCLK  - Open Drain        
 #define DEBOUNCE_TIME 0X3C                                  
 #define TIME_SLOT 0X40        //00 sincronizado com borda negativa do PCLK, 40 borda positiva
@@ -60,7 +62,9 @@ class Placaramal{
 		void periodico();
 
 		void init();
+
 		void init_channel1();
+
 		void init_channel2();
 
 		void take_hook(int canal);
@@ -75,7 +79,7 @@ class Placaramal{
 
 		void clean_buffer();
 
-		void set_master_clock();
+		void set_master_clock(alt_u8 clock);
 
 		void set_coefficients(alt_u8 operation);
 
@@ -85,9 +89,9 @@ class Placaramal{
 
 		void activate_codec();
 
-		void set_debounce_time();
+		void set_debounce_time(alt_u8 debounce);
 
-		void set_time_slot();
+		void set_time_slot(alt_u8 time_slot);
 
 		void set_time_real_data();
 
@@ -96,10 +100,15 @@ class Placaramal{
 		void condicao_operacao();
 
 		void filter_coefficients_gr(alt_u8 coefficient_gr[2]);
+
 		void filter_coefficients_gx(alt_u8 coefficient_gx[2]);
+
 		void filter_coefficients_r(alt_u8 coefficient_r[14]);
+
 		void filter_coefficients_z(alt_u8 coefficient_z[15]);
+
 		void filter_coefficients_b1(alt_u8 coefficient_b1[14]);
+
 		void filter_coefficients_b2(alt_u8 coefficient_b2[2]);
 
 		void set_all_coefficients();
@@ -107,6 +116,10 @@ class Placaramal{
 		void channel_ring();
 
 		void hardware_reset();
+
+		void transmit_time_slot(alt_u8 timeslot);
+
+		void receive_time_slot(alt_u8 timeslot);
 
 		void write_codec(alt_u8 comando_codec, alt_u8 valor_comando);
 
