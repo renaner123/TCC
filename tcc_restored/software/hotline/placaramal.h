@@ -25,6 +25,19 @@
 #define RING_CHANNEL 0X1C                                   //         |00011100
 #define STOP_RING_CHANNEL 0X1E                              //         |00011110
 #define HARDWARE_RESET 0X04
+#define TRANSMIT_TIME_SLOT 0x40
+#define RECEIVE_TIME_SLOT 0x42
+#define HARDWARE_RESET 0X04
+#define OPERATING_CONDITIONS 0x70
+#define AISN_ANALOG_GAINS 0x50
+#define GR_FILTER_COEFFICIENTS 0x82
+#define GX_FILTER_COEFFICIENTS 0x80
+#define R_FILTER_COEFFICIENTS 0x8A
+#define Z_FILTER_COEFFICIENTS 0x84
+#define B1_FILTER_COEFFICIENTS 0x86
+#define B2_FILTER_COEFFICIENTS 0x96
+#define TRANSMIT_TIME_SLOT 0x40
+#define RECEIVE_TIME_SLOT 0x42
 
 //VALORES USADOS NAS CONFIGURACOES
 #define MASTER_CLOCK 0X12     //2.048 Mhz - PCLK            //         |00010010
@@ -65,13 +78,15 @@ class Placaramal{
 
 		void definir_master_clock();
 
-		void definir_coefienctes();
+		void set_coefficients(alt_u8 operation);
 
 		void configurar_registradores_canais();
 
+		void configurar_direcao_slic(alt_u8 direction);
+
 		void configurar_direcao_slic();
 
-		void comando_ativar_codec();
+		void activate_codec();
 
 		void configurar_debounce_time();
 
@@ -80,6 +95,11 @@ class Placaramal{
 		void configurar_time_real_data();
 
 		void configurar_interrupt_mask();
+
+
+		void transmit_time_slot(alt_u8 timeslot);
+
+		void receive_time_slot(alt_u8 timeslot);
 
 		void ringar_canal();
 
