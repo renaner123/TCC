@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 	Placaramal teste;
 
 	teste.init();
-	teste.ringar_canal();//5 toques e somente o canal 1
+	//teste.channel_ring();//5 toques e somente o canal 1
 	teste.monitore_channel();
 
     return 0;

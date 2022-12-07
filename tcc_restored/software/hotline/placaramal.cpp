@@ -20,9 +20,12 @@ Placaramal::Placaramal() {
         this->set_slic_direction(DIRECTION_SLIC_CD1_CD2);
         this->activate_codec();
         printf("Valor recebido do codec: %02x: \n",this->read_codec(READ_SLIC_DIRECTION_STATUS_BITS));
-        IOWR_ALTERA_AVALON_PIO_DATA(RST_QSYS_BASE, 1);
-        usleep(50000);
-        IOWR_ALTERA_AVALON_PIO_DATA(RST_QSYS_BASE, 0);
+
+        this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_1);
+        this->write_codec(WRITE_IO_REGISTER,0x1E);
+        this->write_codec(WRITE_CHANNEL_ENABLE,0x08);
+        this->write_codec(WRITE_IO_REGISTER,0x1E);
+
     }
 
     void Placaramal::set_master_clock(alt_u8 clock){
@@ -77,8 +80,11 @@ Placaramal::Placaramal() {
     }
 
     void Placaramal::channel_ring(){
-    //por enquanto está estático canal 1
     int count = 0;
+
+    IOWR_ALTERA_AVALON_PIO_DATA(RST_QSYS_BASE, 1);
+    usleep(500000);
+    IOWR_ALTERA_AVALON_PIO_DATA(RST_QSYS_BASE, 0);
 
     this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_1);
     this->write_codec(AISN_ANALOG_GAINS,0x00);
@@ -154,7 +160,11 @@ Placaramal::Placaramal() {
     void Placaramal::monitore_channel(){
     	while(true){
     	usleep(3000000);
-    	printf("Valor recebido do codec: %02x: \n",this->read_codec(WRITE_REAL_TIME_DATA_REGISTER_CLEAR_INTERRUPT));
+    	alt_u8 retorno = this->read_codec(WRITE_REAL_TIME_DATA_REGISTER_CLEAR_INTERRUPT);
+    	if(retorno==0xAE){
+    		channel_ring();
+    	}
+    	printf("Valor recebido do codec: %02x: \n", retorno);
     	}
     }
 
@@ -165,4 +175,3 @@ Placaramal::Placaramal() {
             this->rx_buf[i]= 0;
         }
 }
-
