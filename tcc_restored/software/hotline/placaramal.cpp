@@ -79,6 +79,31 @@ Placaramal::Placaramal() {
         return false;
     }
 
+    void Placaramal::init_channel1(){
+        this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_1);
+        this->write_codec(AISN_ANALOG_GAINS,0x00);
+        this->set_coefficients(0x3F);
+        this->set_coefficients(0x3F);
+        this->write_codec(AISN_ANALOG_GAINS,0x00);
+        this->activate_codec();
+        this->transmit_time_slot(0x00);
+        this->receive_time_slot(0x00);
+
+    }
+
+    void Placaramal::init_channel2(){
+
+        this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_2);
+        this->write_codec(AISN_ANALOG_GAINS,0x80);
+        this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_2);
+        this->set_coefficients(0x3F);
+        this->set_coefficients(0x3F);
+        this->write_codec(AISN_ANALOG_GAINS,0x00);
+        this->activate_codec();
+        this->transmit_time_slot(0x01);
+        this->receive_time_slot(0x01);
+    }
+
     void Placaramal::channel_ring(){
     int count = 0;
 
@@ -86,24 +111,8 @@ Placaramal::Placaramal() {
     usleep(500000);
     IOWR_ALTERA_AVALON_PIO_DATA(RST_QSYS_BASE, 0);
 
-    this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_1);
-    this->write_codec(AISN_ANALOG_GAINS,0x00);
-    this->set_coefficients(0x3F);
-    this->set_coefficients(0x3F);
-    this->write_codec(AISN_ANALOG_GAINS,0x00);
-    this->activate_codec();
-    this->transmit_time_slot(0x00);
-    this->receive_time_slot(0x00);
-
-    this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_2);
-    this->write_codec(AISN_ANALOG_GAINS,0x80);
-    this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_2);
-    this->set_coefficients(0x3F);
-    this->set_coefficients(0x3F);
-    this->write_codec(AISN_ANALOG_GAINS,0x00);
-    this->activate_codec();
-    this->transmit_time_slot(0x01);
-    this->receive_time_slot(0x01);
+    this->init_channel1();
+    this->init_channel2();
 
         while (count<2) {
             this->write_codec(WRITE_CHANNEL_ENABLE,CHANNEL_1);
