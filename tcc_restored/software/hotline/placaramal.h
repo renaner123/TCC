@@ -60,48 +60,54 @@ class Placaramal{
 
 		~Placaramal() {};
 
-		void periodico();
+		void periodical();
 
 		void init();
 
-		void tirarGancho(int canal);
+		void init_channel1();
 
-		void colocarGancho();
+		void init_channel2();
 
-		void verificarAtendimento();
+		void take_hook(int canal);
 
-		void tomDiscagem();
+		void put_hook();
 
-		void atendimento();
+		void veirify_attendance();
 
-		void limparbuffer();
+		void dial_tone();
 
-		void definir_master_clock();
+		void attendance();
+
+		void clean_buffer();
+
+		void set_master_clock(alt_u8 clock);
 
 		void set_coefficients(alt_u8 operation);
 
-		void configurar_registradores_canais();
+		void channel_enable(alt_u8 channell);
 
-		void configurar_direcao_slic(alt_u8 direction);
+		void set_slic_direction(alt_u8 direction);
 
-		void configurar_direcao_slic();
+		void set_slic_direction();
 
 		void activate_codec();
 
-		void configurar_debounce_time();
+		void operating_conditions();
 
-		void configurar_time_slot();
+		void set_debounce_time(alt_u8 debounce);
 
-		void configurar_time_real_data();
+		void set_time_slot(alt_u8 time_slot);
 
-		void configurar_interrupt_mask();
+		void set_time_real_data();
+
+		void set_interrupt_mask(alt_u8 mask);
 
 
 		void transmit_time_slot(alt_u8 timeslot);
 
 		void receive_time_slot(alt_u8 timeslot);
 
-		void ringar_canal();
+		void channel_ring();
 
 		void hardware_reset();
 
@@ -122,6 +128,19 @@ class Placaramal{
 		alt_u8 tx_buf[8];
 		alt_u8 rx_buf[8];
 
+		alt_u8 coefficient_filter_gr_channel1[2] ;
+		alt_u8 coefficient_filter_gx_channel1[2] ;
+		alt_u8 coefficient_filter_r_channel1[14]  ;
+        alt_u8 coefficient_filter_z_channel1[15] ;
+        alt_u8 coefficient_filter_b1_channel1[14] ;
+        alt_u8 coefficient_filter_b2_channel1[2]  ;
+
+		alt_u8 coefficient_filter_gr_channel2[2] ;
+		alt_u8 coefficient_filter_gx_channel2[2] ;
+		alt_u8 coefficient_filter_r_channel2[14] ;
+        alt_u8 coefficient_filter_z_channel2[15] ;
+        alt_u8 coefficient_filter_b1_channel2[14];
+        alt_u8 coefficient_filter_b2_channel2[2] ;
 };
 
 
