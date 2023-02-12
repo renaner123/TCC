@@ -1,10 +1,22 @@
-## Trabalho de conclusão de curso
+# Integração de ramais analógicos com FPGA utilizando processador softcore
 
-Depois será específicado a proposta e do que se trata.
+Este repositório visa agrupar algumas informações referente ao projeto, [Integração de ramais analógicos com FPGA utilizando processador softcore](https://wiki.sj.ifsc.edu.br/images/0/04/TCC_64_RENAN_RODOLFO_DA_SILVA.pdf), que foi submetido à Coordenadoria do Curso de Engenharia de Telecomunicações do campus São José do Instituto Federal de Santa Catarina para a obtenção do diploma de Engenheiro de Telecomunicações.
 
-Arquivos main.cpp, placaramal.cpp e placaramal.h devem ser usados no projeto do Quartus para testar a codec
+## Objetivo do projeto
 
-### Executar a simulação no ModelSim do projeto em andamento
+O objetivo do projeto foi integrar uma placa de ramal da central telefônica
+Impacta 16, modelo 4990083, com um *kit* de desenvolvimento FPGA, modelo DE2-115,
+para criar uma plataforma mínima para experimentações envolvendo canais digitais de
+áudio e processadores sintetizados (softcores). Todas as informações, metodologias, testes e conclusões realizadas, podem ser encontradas na monografia disponível [aqui](https://wiki.sj.ifsc.edu.br/images/0/04/TCC_64_RENAN_RODOLFO_DA_SILVA.pdf).
+
+
+## Projetos disnponíveis
+
+### Gravar o projeto no *kit* de desenvolvimento FPGA DE2-115
+
+A *branch* DE2-115 possui os arquivos
+
+### Executar a simulação no ModelSim do projeto contido na *branch* projeto
 
 1. Fazer o clone deste repositório e alterar para a *branch* `projeto` da seguinte maneira:
  
