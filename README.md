@@ -7,7 +7,7 @@ Sumário de testes:
 - [FIFOs on chip](#fifos-on-chip)
 ## FIFOs on Nios
 
-Para este teste, foram adicionados dois blocos IP FIFO, para serem controladas pelo Nios, através do *Platform Designer*, uma para FIFO de recepção e um para FIFO de transmissão, além dos blocos de memória, Nios, etc. As FIFOs são controlados por um PIO chamado TX_EN, no qual habilita e desabilita a escrita nas FIFOs. 
+Para este teste, foram adicionados dois blocos IP FIFO, para serem controladas pelo Nios, através do *Platform Designer*, uma para FIFO de recepção e um para FIFO de transmissão, além dos blocos de memória, Nios, etc. As FIFOs são controladas por um PIO chamado TX_EN, no qual habilita e desabilita a escrita nas FIFOs. 
 
 O arquivo utilizado para testar o comportamento, feito em `C`, e o arquivo `.qar` do projeto se encontram neste diretório [aqui](tests/FIFO/duas_fifo_nios/).
 
@@ -36,5 +36,7 @@ O arquivo utilizado para testar o comportamento, feito em `C`, o arquivo `.qar` 
   ![](tests/FIFO/fifo_tx_fifo_rx/saida_software.PNG)
 
 </details>
+
+Nesse caso, é possível encontrar algumas dificuldades em relação ao domínio de *clock* diferente existente entre a FPGA e o Nios.
 
 > Foram realizados outros testes com base nos dois exemplos estudados e que estão disponíveis na pasta [tests](tests/FIFO/). Qualquer dúvida sobre eles, fico a disposição.
